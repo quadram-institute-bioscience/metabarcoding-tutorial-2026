@@ -1,0 +1,8 @@
+/*-- scss:defaults --*/
+$primary: #00857c;          // pick a QIB-ish teal
+$link-color: #00857c;
+$code-color: #c7254e;
+
+/*-- scss:rules --*/
+.sidebar-title { font-weight: 700; }
+.callout-tip { border-left-color: $primary !important; }

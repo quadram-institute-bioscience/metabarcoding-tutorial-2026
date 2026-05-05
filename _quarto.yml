@@ -4,12 +4,13 @@ project:
 
 book:
   title: "16S Metabarcoding with DADA2"
-  logo: images/metabarcoding.png
-  logo-href: https://corebio.info/
-  logo-alt: "Quadram Institute Bioscience"
   subtitle: "A step-by-step tutorial using cucumber fermentation data"
   author: "Quadram Institute Bioscience"
   date: today
+  sidebar:
+    logo: images/metabarcoding.png
+    logo-href: https://corebio.info/
+    logo-alt: "Quadram Institute Bioscience"
   chapters:
     - index.qmd
     - 01_setup_quality.qmd
@@ -31,8 +32,8 @@ book:
 format:
   html:
     theme:
-      light: cosmo
-      dark: darkly              # adds dark-mode toggle
+      light: [cosmo, custom.scss]
+      dark: [darkly, custom.scss]
     toc: true
     toc-depth: 3
     toc-title: "On this page"

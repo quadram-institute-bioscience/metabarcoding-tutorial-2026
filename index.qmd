@@ -2,6 +2,8 @@
 
 ## About this training
 
+![overview](images/overview.png)
+
 This is a tutorial to analyse a metabarcoding dataset (in our case 16S) using DADA2.
 The input is a set of FASTQ files (typically, and in our case Illumina paired-end), and the output will be:
 
@@ -22,6 +24,8 @@ DADA2 tutorials.
 This session is designed and delivered by [QIB Core Bioinformatics](https://quadram-institute-bioscience.github.io/) and in particular Andrea Telatin, Judit Talas and Alise Ponsero.
 
 ## What is 16S metabarcoding?
+
+![rDNA](images/rdna.png)
 
 16S metabarcoding is a culture-independent method to profile the bacterial communities
 present in a sample. It works by amplifying and sequencing a specific region of the

@@ -10,7 +10,9 @@ taxa          <- readRDS(file.path(path_precomp, "taxa.rds"))
 
 ## What is phyloseq?
 
-**phyloseq** is an R package that combines three data tables into a single, consistent
+![Phyloseq](images/phyloseq-image.png){width=80% fig-align="center"}
+
+[**phyloseq**](https://joey711.github.io/phyloseq/) is an R package that combines three data tables into a single, consistent
 object:
 
 | Component | Function | Description |
