@@ -3,3 +3,6 @@ filtered/
 precomputed/
 .DS_Store
 *_files/
+
+/.quarto/
+**/*.quarto_ipynb
