@@ -1,0 +1,250 @@
+# Denoising, Merging and Chimera Removal
+
+```{r}
+#| label: setup
+#| include: false
+source("_common.R")
+
+# Load objects produced by earlier chapters
+errF <- readRDS(file.path(path_precomp, "errF.rds"))
+errR <- readRDS(file.path(path_precomp, "errR.rds"))
+out  <- readRDS(file.path(path_precomp, "out.rds"))
+```
+
+## Denoising with DADA2
+
+The core DADA2 algorithm uses the error model learned in the previous chapter to
+distinguish true biological sequences from sequences that arose through PCR or
+sequencing errors. It works by asking: *given the error model, is this slightly
+different sequence more likely to be a genuine variant, or an error-derived copy of
+a more abundant sequence?*
+
+The result is a set of **Amplicon Sequence Variants (ASVs)**: exact sequences with no
+artificial clustering.
+
+```{r}
+#| label: denoise
+#| cache: true
+
+dadaFs_file <- file.path(path_precomp, "dadaFs.rds")
+dadaRs_file <- file.path(path_precomp, "dadaRs.rds")
+
+if (!file.exists(dadaFs_file)) {
+  message("Denoising forward reads...")
+  dadaFs <- dada(filtFs, err = errF, multithread = TRUE)
+  saveRDS(dadaFs, dadaFs_file)
+} else {
+  dadaFs <- readRDS(dadaFs_file)
+}
+
+if (!file.exists(dadaRs_file)) {
+  message("Denoising reverse reads...")
+  dadaRs <- dada(filtRs, err = errR, multithread = TRUE)
+  saveRDS(dadaRs, dadaRs_file)
+} else {
+  dadaRs <- readRDS(dadaRs_file)
+}
+```
+
+### What does the dada2 output tell us?
+
+```{r}
+#| label: denoise-inspect
+
+# Inspect the first sample's denoising result
+dadaFs[[1]]
+```
+
+The output reports how many unique sequences were identified in the sample and how many
+reads support each one. The ratio of reads to unique sequences gives an indication of
+how much error correction was performed.
+
+## Merging paired-end reads
+
+After denoising, forward and reverse reads are merged to reconstruct the full amplicon
+sequence. Merging requires a minimum overlap region between the denoised forward and
+reverse reads — by default, at least 12 bp.
+
+```{r}
+#| label: merge
+#| cache: true
+
+mergers_file <- file.path(path_precomp, "mergers.rds")
+
+if (!file.exists(mergers_file)) {
+  message("Merging paired reads...")
+  mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose = TRUE)
+  saveRDS(mergers, mergers_file)
+} else {
+  mergers <- readRDS(mergers_file)
+}
+```
+
+::: {.callout-tip}
+## Merging failure
+If a large proportion of reads fail to merge (visible in the tracking table later),
+the most common causes are:
+
+1. **Insufficient overlap** — increase `truncLen` for one or both reads, or reduce it
+   if the reads are too short
+2. **Primer residues** — verify that primers were fully removed before this analysis
+3. **Wrong amplicon size** — the reads must cover the amplicon with some overlap
+:::
+
+## Build the sequence table
+
+`makeSequenceTable()` produces a sample × ASV matrix of read counts. This is the
+central data object in DADA2.
+
+```{r}
+#| label: seqtab
+
+seqtab <- makeSequenceTable(mergers)
+cat("Dimensions (samples × ASVs):", dim(seqtab), "\n")
+```
+
+### Sequence length distribution
+
+The expected amplicon length for the V3–V4 region is approximately 400–470 bp. Any
+sequences outside this range are likely artefacts (non-specific amplification or
+chimeras) and will often be removed in subsequent steps.
+
+```{r}
+#| label: length-dist
+#| fig-width: 8
+#| fig-height: 4
+
+seq_lengths <- table(nchar(getSequences(seqtab)))
+print(seq_lengths)
+
+# Visualise
+barplot(seq_lengths,
+        xlab = "Sequence length (bp)",
+        ylab = "Number of ASVs",
+        main = "ASV length distribution (before chimera removal)",
+        las  = 2)
+```
+
+## Chimera removal
+
+Chimeric sequences are PCR artefacts created when an incomplete extension product
+from one cycle acts as a primer in a subsequent cycle, fusing the 5′ end of one
+template with the 3′ end of another. DADA2 identifies chimeras using the
+`removeBimeraDenovo()` function, which checks whether each sequence can be
+reconstructed from two more-abundant "parent" sequences.
+
+```{r}
+#| label: chimera
+#| cache: true
+
+seqtab_file <- file.path(path_precomp, "seqtab_nochim.rds")
+
+if (!file.exists(seqtab_file)) {
+  message("Removing chimeras...")
+  seqtab.nochim <- removeBimeraDenovo(seqtab,
+                                       method      = "consensus",
+                                       multithread = TRUE,
+                                       verbose     = TRUE)
+  saveRDS(seqtab.nochim, seqtab_file)
+} else {
+  seqtab.nochim <- readRDS(seqtab_file)
+}
+
+cat("ASVs before chimera removal:", ncol(seqtab), "\n")
+cat("ASVs after  chimera removal:", ncol(seqtab.nochim), "\n")
+```
+
+```{r}
+#| label: chimera-proportion
+
+pct_retained <- round(100 * sum(seqtab.nochim) / sum(seqtab), 1)
+cat("Proportion of reads retained after chimera removal:", pct_retained, "%\n")
+```
+
+::: {.callout-note}
+## Interpreting chimera removal
+It is **normal** for a large *number* of unique sequences to be flagged as chimeric —
+often 10–30 % of ASVs. However, chimeric reads usually represent a small proportion
+of total *reads* (< 10 %), because chimeras are typically rare relative to their
+parent sequences. If you lose > 20 % of reads here, double-check that primers were
+fully trimmed.
+:::
+
+```{r}
+#| label: length-dist-nochim
+#| fig-width: 8
+#| fig-height: 4
+
+seq_lengths_nc <- table(nchar(getSequences(seqtab.nochim)))
+print(seq_lengths_nc)
+
+barplot(seq_lengths_nc,
+        xlab = "Sequence length (bp)",
+        ylab = "Number of ASVs",
+        main = "ASV length distribution (after chimera removal)",
+        las  = 2)
+```
+
+## Tracking reads through the pipeline
+
+A key quality-control step is to track how many reads survive each stage of the
+pipeline. Large losses at any single step point to a specific problem.
+
+```{r}
+#| label: tracking
+
+getN <- function(x) sum(getUniques(x))
+
+track <- cbind(
+  out,
+  denoisedF = sapply(dadaFs, getN),
+  denoisedR = sapply(dadaRs, getN),
+  merged    = sapply(mergers, getN),
+  nonchim   = rowSums(seqtab.nochim)
+)
+colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR",
+                     "merged", "nonchim")
+rownames(track) <- sample.names
+
+write.csv(track, "dada2_QC.csv")
+track
+```
+
+### Visualise read tracking
+
+```{r}
+#| label: tracking-plot
+#| fig-width: 9
+#| fig-height: 5
+
+step_labels <- c(
+  input     = "Raw Input",
+  filtered  = "Quality Filtered",
+  denoisedF = "Denoised (Fwd)",
+  denoisedR = "Denoised (Rev)",
+  merged    = "Merged Pairs",
+  nonchim   = "Non-chimeric"
+)
+
+track_long <- as.data.frame(track) %>%
+  rownames_to_column("Sample") %>%
+  pivot_longer(-Sample, names_to = "Step", values_to = "Reads") %>%
+  mutate(Step = factor(Step, levels = names(step_labels)))
+
+ggplot(track_long, aes(x = Step, y = Reads, fill = Step)) +
+  geom_boxplot(outlier.size = 1) +
+  scale_x_discrete(labels = step_labels) +
+  scale_fill_viridis_d() +
+  labs(x = "Pipeline Step", y = "Number of Reads",
+       title = "Read counts through the DADA2 pipeline") +
+  theme_minimal() +
+  theme(axis.text.x  = element_text(angle = 45, hjust = 1),
+        legend.position = "none")
+```
+
+**What to look for:**
+
+- A gradual, smooth decline across steps is expected and healthy
+- A sudden large drop at the **filtering** step → truncation lengths may be too aggressive
+- A large drop at **merging** → check overlap between reads; check primers are removed
+- A large drop at **chimera removal** → investigate whether primers are truly absent

@@ -1,0 +1,60 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "16S Metabarcoding with DADA2"
+  logo: images/metabarcoding.png
+  logo-href: https://corebio.info/
+  logo-alt: "Quadram Institute Bioscience"
+  subtitle: "A step-by-step tutorial using cucumber fermentation data"
+  author: "Quadram Institute Bioscience"
+  date: today
+  chapters:
+    - index.qmd
+    - 01_setup_quality.qmd
+    - 02_filter_trim.qmd
+    - 03_error_models.qmd
+    - 04_denoise_merge.qmd
+    - 05_taxonomy.qmd
+    - 06_phyloseq_export.qmd
+  # Helpful for a tutorial book:
+  search: true
+  repo-url: https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/
+  repo-actions: [edit, issue]   # adds "Edit this page" / "Report issue" links
+  downloads: [pdf]              # gives readers a download button
+  sharing: [twitter, linkedin]
+  page-footer:
+    left: "© 2026 Quadram Institute Bioscience"
+    right: "Built with [Quarto](https://quarto.org)"
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly              # adds dark-mode toggle
+    toc: true
+    toc-depth: 3
+    toc-title: "On this page"
+    number-sections: true
+    highlight-style: github
+    code-copy: true
+    code-link: true             # links function calls to their docs (R/Python)
+    code-overflow: wrap         # prevents horizontal scrollbars on long lines
+    df-print: paged
+    fig-cap-location: bottom
+    tbl-cap-location: top
+    smooth-scroll: true
+  pdf:
+    documentclass: scrbook
+    papersize: a4
+    geometry:
+      - margin=2.5cm
+    toc: true
+    number-sections: true
+    colorlinks: true
+
+execute:
+  warning: false
+  message: false
+  freeze: auto

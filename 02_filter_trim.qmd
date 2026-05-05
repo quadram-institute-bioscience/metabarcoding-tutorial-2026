@@ -1,0 +1,129 @@
+# Filtering and Trimming
+
+```{r}
+#| label: setup
+#| include: false
+source("_common.R")
+```
+
+## Why filter reads?
+
+Raw sequencing reads contain:
+
+- **Low-quality bases** at the 3′ end that increase error rates in denoising
+- **Ambiguous bases** (N) that DADA2 cannot handle
+- **PhiX spike-in reads** — a control used for calibration during sequencing
+- Occasionally, reads contaminated by the **PhiX bacteriophage genome**
+
+The `filterAndTrim()` function removes all of these in a single step and also truncates
+reads to a fixed length, which is required for consistent error modelling.
+
+## Define filtered file paths
+
+Here is where we will *save* the filtered reads.
+
+```{r}
+#| label: filtered-paths
+
+filtFs <- file.path(path_filtered,
+                    paste0(sample.names, "_F_filt.fastq.gz"))
+filtRs <- file.path(path_filtered,
+                    paste0(sample.names, "_R_filt.fastq.gz"))
+
+# Give each vector element the corresponding sample name for easy indexing later
+names(filtFs) <- sample.names
+names(filtRs) <- sample.names
+```
+
+## Run filterAndTrim
+
+The *filterAndTrim* function allows to filter our reads that should be already free of sequencing primers!
+
+```{r}
+#| label: filter-trim
+#| cache: true
+
+out <- filterAndTrim(
+  fnFs, filtFs,
+  fnRs, filtRs,
+  truncLen = c(260, 250),   # truncate F reads at 260 bp, R reads at 250 bp
+  maxN     = 0,             # discard any read with an ambiguous base
+  maxEE    = c(2, 2),       # maximum expected errors per read (F and R separately)
+  truncQ   = 10,            # truncate at first base with quality ≤ 10
+  rm.phix  = TRUE,          # remove reads matching PhiX genome
+  compress = TRUE,          # write gzip-compressed output
+  multithread = TRUE        # use all available CPU cores
+)
+saveRDS(out, file.path(path_precomp, "out.rds"))
+```
+
+## Parameter guide
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| `truncLen` | `c(260, 250)` | Keeps high-quality region; must be long enough for reads to overlap after merging |
+| `maxN` | `0` | DADA2 requires zero ambiguous bases |
+| `maxEE` | `c(2, 2)` | Maximum *expected errors* (sum of error probabilities along the read); 2 is a standard threshold |
+| `truncQ` | `10` | Removes the very-low-quality tail before the maxEE calculation |
+| `rm.phix` | `TRUE` | Always advisable; PhiX contamination is common in Illumina data |
+
+::: {.callout-tip}
+## What is Expected Errors (EE)?
+The **expected errors** metric (introduced by Edgar & Flyvbjerg 2015) is more
+informative than a simple minimum quality threshold. For a read with quality scores
+Q₁, Q₂, …, Qₙ, the EE is:
+
+$$EE = \sum_{i=1}^{n} 10^{-Q_i/10}$$
+
+A read with `maxEE = 2` can have no more than 2 expected sequencing errors in total.
+This is more lenient than requiring every base to exceed Q30, while still keeping
+read quality high.
+:::
+
+## Inspect filtering statistics
+
+```{r}
+#| label: filter-stats
+
+# Convert to data frame and add sample names
+filter_stats <- as.data.frame(out)
+filter_stats$sample   <- rownames(filter_stats)
+filter_stats$pct_kept <- round(100 * filter_stats$reads.out / filter_stats$reads.in, 1)
+
+filter_stats[, c("sample", "reads.in", "reads.out", "pct_kept")]
+```
+
+```{r}
+#| label: filter-summary
+
+cat("Median reads retained:", median(filter_stats$pct_kept), "%\n")
+cat("Minimum reads retained:", min(filter_stats$pct_kept), "%\n")
+```
+
+A retention rate above **70–80 %** is generally acceptable. If many samples lose more
+than 30 % of reads at this step, consider relaxing `maxEE` slightly (e.g. to 5) or
+revisiting the primer-trimming step upstream.
+
+## Check filtered files exist
+
+A small sanity check: some samples may have lost all reads (e.g. negative controls
+with very low input). DADA2 will error if it tries to open an empty or absent file.
+
+```{r}
+#| label: check-filtered
+
+# Keep only samples for which filtered files were actually created
+exists_F <- file.exists(filtFs)
+exists_R <- file.exists(filtRs)
+
+if (any(!exists_F | !exists_R)) {
+  dropped <- sample.names[!exists_F | !exists_R]
+  message("The following samples had no reads after filtering and will be excluded: ",
+          paste(dropped, collapse = ", "))
+  filtFs <- filtFs[exists_F & exists_R]
+  filtRs <- filtRs[exists_F & exists_R]
+  sample.names <- names(filtFs)
+}
+
+cat("Samples remaining:", length(sample.names), "\n")
+```
