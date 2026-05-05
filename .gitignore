@@ -1,0 +1,5 @@
+*_cache
+filtered/
+precomputed/
+.DS_Store
+*_files/
