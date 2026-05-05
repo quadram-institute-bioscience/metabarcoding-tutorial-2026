@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.37">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
 <title>2&nbsp; Filtering and Trimming – 16S Metabarcoding with DADA2</title>
 <style>
 /* Default styles provided by pandoc.
@@ -60,7 +57,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -81,10 +77,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3960f907883494f1151aa7142734774f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-d783d5094f66403aace2499abad0c8ec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-3960f907883494f1151aa7142734774f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-576413e428a37d8ed27b4a9cb944cc35.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e9d9fa513417b44937a3bbe1e12c5f34.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-576413e428a37d8ed27b4a9cb944cc35.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -110,15 +105,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<style>html{ scroll-behavior: smooth; }</style>
+}</script><style>html{ scroll-behavior: smooth; }</style>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -144,9 +133,7 @@ window.Quarto = {
   typesetMath
 };
 </script>
-
 </head>
-
 <body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -312,9 +299,7 @@ window.Quarto = {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
@@ -325,35 +310,33 @@ window.Quarto = {
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://corebio.info/" class="sidebar-logo-link">
+      <img src="./images/metabarcoding.png" alt="Quadram Institute Bioscience" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="./images/metabarcoding.png" alt="Quadram Institute Bioscience" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">16S Metabarcoding with DADA2</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://github.com/quadram-institute-bioscience/your-repo" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
     <a href="./16S-Metabarcoding-with-DADA2.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
-          <li>
-            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
               <i class="bi bi-twitter pe-1"></i>
             Twitter
             </a>
           </li>
           <li>
-            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=%7Curl%7C">
               <i class="bi bi-linkedin pe-1"></i>
             LinkedIn
             </a>
           </li>
       </ul>
-    </div>
+</div>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
     </div>
@@ -365,7 +348,7 @@ window.Quarto = {
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
@@ -408,31 +391,26 @@ window.Quarto = {
   </div>
 </li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#why-filter-reads" id="toc-why-filter-reads" class="nav-link active" data-scroll-target="#why-filter-reads"><span class="header-section-number">2.1</span> Why filter reads?</a></li>
+<li><a href="#why-filter-reads" id="toc-why-filter-reads" class="nav-link active" data-scroll-target="#why-filter-reads"><span class="header-section-number">2.1</span> Why filter reads?</a></li>
   <li><a href="#define-filtered-file-paths" id="toc-define-filtered-file-paths" class="nav-link" data-scroll-target="#define-filtered-file-paths"><span class="header-section-number">2.2</span> Define filtered file paths</a></li>
   <li><a href="#run-filterandtrim" id="toc-run-filterandtrim" class="nav-link" data-scroll-target="#run-filterandtrim"><span class="header-section-number">2.3</span> Run filterAndTrim</a></li>
   <li><a href="#parameter-guide" id="toc-parameter-guide" class="nav-link" data-scroll-target="#parameter-guide"><span class="header-section-number">2.4</span> Parameter guide</a></li>
   <li><a href="#inspect-filtering-statistics" id="toc-inspect-filtering-statistics" class="nav-link" data-scroll-target="#inspect-filtering-statistics"><span class="header-section-number">2.5</span> Inspect filtering statistics</a></li>
   <li><a href="#check-filtered-files-exist" id="toc-check-filtered-files-exist" class="nav-link" data-scroll-target="#check-filtered-files-exist"><span class="header-section-number">2.6</span> Check filtered files exist</a></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quadram-institute-bioscience/your-repo/edit/main/02_filter_trim.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/your-repo/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/02_filter_trim.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span>
+</h1>
 </div>
 
 
@@ -446,67 +424,63 @@ window.Quarto = {
   
 
 
-</header>
-
-
-<section id="why-filter-reads" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="why-filter-reads"><span class="header-section-number">2.1</span> Why filter reads?</h2>
+</header><section id="why-filter-reads" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="why-filter-reads">
+<span class="header-section-number">2.1</span> Why filter reads?</h2>
 <p>Raw sequencing reads contain:</p>
 <ul>
-<li><strong>Low-quality bases</strong> at the 3′ end that increase error rates in denoising</li>
-<li><strong>Ambiguous bases</strong> (N) that DADA2 cannot handle</li>
-<li><strong>PhiX spike-in reads</strong> — a control used for calibration during sequencing</li>
-<li>Occasionally, reads contaminated by the <strong>PhiX bacteriophage genome</strong></li>
+<li>
+<strong>Low-quality bases</strong> at the 3′ end that increase error rates in denoising</li>
+<li>
+<strong>Ambiguous bases</strong> (N) that DADA2 cannot handle</li>
+<li>
+<strong>PhiX spike-in reads</strong> — a control used for calibration during sequencing</li>
+<li>Occasionally, reads contaminated by the <strong>PhiX bacteriophage genome</strong>
+</li>
 </ul>
 <p>The <code>filterAndTrim()</code> function removes all of these in a single step and also truncates reads to a fixed length, which is required for consistent error modelling.</p>
-</section>
-<section id="define-filtered-file-paths" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="define-filtered-file-paths"><span class="header-section-number">2.2</span> Define filtered file paths</h2>
+</section><section id="define-filtered-file-paths" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="define-filtered-file-paths">
+<span class="header-section-number">2.2</span> Define filtered file paths</h2>
 <p>Here is where we will <em>save</em> the filtered reads.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>filtFs <span class="ot">&lt;-</span> <span class="fu">file.path</span>(path_filtered,</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">paste0</span>(sample.names, <span class="st">"_F_filt.fastq.gz"</span>))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>filtRs <span class="ot">&lt;-</span> <span class="fu">file.path</span>(path_filtered,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">paste0</span>(sample.names, <span class="st">"_R_filt.fastq.gz"</span>))</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Give each vector element the corresponding sample name for easy indexing later</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(filtFs) <span class="ot">&lt;-</span> sample.names</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(filtRs) <span class="ot">&lt;-</span> sample.names</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">filtFs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">path_filtered</span>,</span>
+<span>                    <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">sample.names</span>, <span class="st">"_F_filt.fastq.gz"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">filtRs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">path_filtered</span>,</span>
+<span>                    <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">sample.names</span>, <span class="st">"_R_filt.fastq.gz"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Give each vector element the corresponding sample name for easy indexing later</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">filtFs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sample.names</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">filtRs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sample.names</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section>
-<section id="run-filterandtrim" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="run-filterandtrim"><span class="header-section-number">2.3</span> Run filterAndTrim</h2>
+</section><section id="run-filterandtrim" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="run-filterandtrim">
+<span class="header-section-number">2.3</span> Run filterAndTrim</h2>
 <p>The <em>filterAndTrim</em> function allows to filter our reads that should be already free of sequencing primers!</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">filterAndTrim</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  fnFs, filtFs,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  fnRs, filtRs,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">truncLen =</span> <span class="fu">c</span>(<span class="dv">260</span>, <span class="dv">250</span>),   <span class="co"># truncate F reads at 260 bp, R reads at 250 bp</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxN     =</span> <span class="dv">0</span>,             <span class="co"># discard any read with an ambiguous base</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxEE    =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>),       <span class="co"># maximum expected errors per read (F and R separately)</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">truncQ   =</span> <span class="dv">10</span>,            <span class="co"># truncate at first base with quality ≤ 10</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">rm.phix  =</span> <span class="cn">TRUE</span>,          <span class="co"># remove reads matching PhiX genome</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">compress =</span> <span class="cn">TRUE</span>,          <span class="co"># write gzip-compressed output</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">multithread =</span> <span class="cn">TRUE</span>        <span class="co"># use all available CPU cores</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(out, <span class="fu">file.path</span>(path_precomp, <span class="st">"out.rds"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">filterAndTrim</span><span class="op">(</span></span>
+<span>  <span class="va">fnFs</span>, <span class="va">filtFs</span>,</span>
+<span>  <span class="va">fnRs</span>, <span class="va">filtRs</span>,</span>
+<span>  truncLen <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">260</span>, <span class="fl">250</span><span class="op">)</span>,   <span class="co"># truncate F reads at 260 bp, R reads at 250 bp</span></span>
+<span>  maxN     <span class="op">=</span> <span class="fl">0</span>,             <span class="co"># discard any read with an ambiguous base</span></span>
+<span>  maxEE    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,       <span class="co"># maximum expected errors per read (F and R separately)</span></span>
+<span>  truncQ   <span class="op">=</span> <span class="fl">10</span>,            <span class="co"># truncate at first base with quality ≤ 10</span></span>
+<span>  rm.phix  <span class="op">=</span> <span class="cn">TRUE</span>,          <span class="co"># remove reads matching PhiX genome</span></span>
+<span>  compress <span class="op">=</span> <span class="cn">TRUE</span>,          <span class="co"># write gzip-compressed output</span></span>
+<span>  multithread <span class="op">=</span> <span class="cn">TRUE</span>        <span class="co"># use all available CPU cores</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">out</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">path_precomp</span>, <span class="st">"out.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section>
-<section id="parameter-guide" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="parameter-guide"><span class="header-section-number">2.4</span> Parameter guide</h2>
+</section><section id="parameter-guide" class="level2" data-number="2.4"><h2 data-number="2.4" class="anchored" data-anchor-id="parameter-guide">
+<span class="header-section-number">2.4</span> Parameter guide</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 37%">
 <col style="width: 24%">
 <col style="width: 37%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th>Parameter</th>
 <th>Value</th>
 <th>Rationale</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td><code>truncLen</code></td>
@@ -550,16 +524,15 @@ window.Quarto = {
 <p>A read with <code>maxEE = 2</code> can have no more than 2 expected sequencing errors in total. This is more lenient than requiring every base to exceed Q30, while still keeping read quality high.</p>
 </div>
 </div>
-</section>
-<section id="inspect-filtering-statistics" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="inspect-filtering-statistics"><span class="header-section-number">2.5</span> Inspect filtering statistics</h2>
+</section><section id="inspect-filtering-statistics" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="inspect-filtering-statistics">
+<span class="header-section-number">2.5</span> Inspect filtering statistics</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to data frame and add sample names</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>filter_stats <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(out)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>filter_stats<span class="sc">$</span>sample   <span class="ot">&lt;-</span> <span class="fu">rownames</span>(filter_stats)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>filter_stats<span class="sc">$</span>pct_kept <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> filter_stats<span class="sc">$</span>reads.out <span class="sc">/</span> filter_stats<span class="sc">$</span>reads.in, <span class="dv">1</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>filter_stats[, <span class="fu">c</span>(<span class="st">"sample"</span>, <span class="st">"reads.in"</span>, <span class="st">"reads.out"</span>, <span class="st">"pct_kept"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Convert to data frame and add sample names</span></span>
+<span><span class="va">filter_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span><span class="va">filter_stats</span><span class="op">$</span><span class="va">sample</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">filter_stats</span><span class="op">)</span></span>
+<span><span class="va">filter_stats</span><span class="op">$</span><span class="va">pct_kept</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="va">filter_stats</span><span class="op">$</span><span class="va">reads.out</span> <span class="op">/</span> <span class="va">filter_stats</span><span class="op">$</span><span class="va">reads.in</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">filter_stats</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="st">"reads.in"</span>, <span class="st">"reads.out"</span>, <span class="st">"pct_kept"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -569,45 +542,41 @@ window.Quarto = {
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Median reads retained:"</span>, <span class="fu">median</span>(filter_stats<span class="sc">$</span>pct_kept), <span class="st">"%</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Median reads retained:"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">filter_stats</span><span class="op">$</span><span class="va">pct_kept</span><span class="op">)</span>, <span class="st">"%\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Median reads retained: 81.2 %</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Minimum reads retained:"</span>, <span class="fu">min</span>(filter_stats<span class="sc">$</span>pct_kept), <span class="st">"%</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Minimum reads retained:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">filter_stats</span><span class="op">$</span><span class="va">pct_kept</span><span class="op">)</span>, <span class="st">"%\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Minimum reads retained: 60.5 %</code></pre>
 </div>
 </div>
 <p>A retention rate above <strong>70–80 %</strong> is generally acceptable. If many samples lose more than 30 % of reads at this step, consider relaxing <code>maxEE</code> slightly (e.g.&nbsp;to 5) or revisiting the primer-trimming step upstream.</p>
-</section>
-<section id="check-filtered-files-exist" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="check-filtered-files-exist"><span class="header-section-number">2.6</span> Check filtered files exist</h2>
+</section><section id="check-filtered-files-exist" class="level2" data-number="2.6"><h2 data-number="2.6" class="anchored" data-anchor-id="check-filtered-files-exist">
+<span class="header-section-number">2.6</span> Check filtered files exist</h2>
 <p>A small sanity check: some samples may have lost all reads (e.g.&nbsp;negative controls with very low input). DADA2 will error if it tries to open an empty or absent file.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only samples for which filtered files were actually created</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>exists_F <span class="ot">&lt;-</span> <span class="fu">file.exists</span>(filtFs)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>exists_R <span class="ot">&lt;-</span> <span class="fu">file.exists</span>(filtRs)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">any</span>(<span class="sc">!</span>exists_F <span class="sc">|</span> <span class="sc">!</span>exists_R)) {</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  dropped <span class="ot">&lt;-</span> sample.names[<span class="sc">!</span>exists_F <span class="sc">|</span> <span class="sc">!</span>exists_R]</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"The following samples had no reads after filtering and will be excluded: "</span>,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste</span>(dropped, <span class="at">collapse =</span> <span class="st">", "</span>))</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  filtFs <span class="ot">&lt;-</span> filtFs[exists_F <span class="sc">&amp;</span> exists_R]</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  filtRs <span class="ot">&lt;-</span> filtRs[exists_F <span class="sc">&amp;</span> exists_R]</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  sample.names <span class="ot">&lt;-</span> <span class="fu">names</span>(filtFs)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Samples remaining:"</span>, <span class="fu">length</span>(sample.names), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Keep only samples for which filtered files were actually created</span></span>
+<span><span class="va">exists_F</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="va">filtFs</span><span class="op">)</span></span>
+<span><span class="va">exists_R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="va">filtRs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html">any</a></span><span class="op">(</span><span class="op">!</span><span class="va">exists_F</span> <span class="op">|</span> <span class="op">!</span><span class="va">exists_R</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">dropped</span> <span class="op">&lt;-</span> <span class="va">sample.names</span><span class="op">[</span><span class="op">!</span><span class="va">exists_F</span> <span class="op">|</span> <span class="op">!</span><span class="va">exists_R</span><span class="op">]</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html">message</a></span><span class="op">(</span><span class="st">"The following samples had no reads after filtering and will be excluded: "</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">dropped</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">filtFs</span> <span class="op">&lt;-</span> <span class="va">filtFs</span><span class="op">[</span><span class="va">exists_F</span> <span class="op">&amp;</span> <span class="va">exists_R</span><span class="op">]</span></span>
+<span>  <span class="va">filtRs</span> <span class="op">&lt;-</span> <span class="va">filtRs</span><span class="op">[</span><span class="va">exists_F</span> <span class="op">&amp;</span> <span class="va">exists_R</span><span class="op">]</span></span>
+<span>  <span class="va">sample.names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">filtFs</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Samples remaining:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">sample.names</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Samples remaining: 29 </code></pre>
 </div>
 </div>
 
 
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -1019,9 +988,7 @@ window.Quarto = {
       }
     }
   });
-  </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./01_setup_quality.html" class="pagination-link" aria-label="Setup and Quality Assessment">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span>
       </a>          
@@ -1033,21 +1000,18 @@ window.Quarto = {
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
 <p>© 2026 Quadram Institute Bioscience</p>
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quadram-institute-bioscience/your-repo/edit/main/02_filter_trim.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/your-repo/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/02_filter_trim.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org">Quarto</a></p>
 </div>
   </div>
 </footer>
-
-
 
 
 <script src="site_libs/quarto-html/zenscroll-min.js"></script>

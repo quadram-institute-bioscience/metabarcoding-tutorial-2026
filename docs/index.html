@@ -82,9 +82,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3960f907883494f1151aa7142734774f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-d783d5094f66403aace2499abad0c8ec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-3960f907883494f1151aa7142734774f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-576413e428a37d8ed27b4a9cb944cc35.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e9d9fa513417b44937a3bbe1e12c5f34.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-576413e428a37d8ed27b4a9cb944cc35.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -301,11 +301,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://corebio.info/" class="sidebar-logo-link">
+      <img src="./images/metabarcoding.png" alt="Quadram Institute Bioscience" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="./images/metabarcoding.png" alt="Quadram Institute Bioscience" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">16S Metabarcoding with DADA2</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://github.com/quadram-institute-bioscience/your-repo" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
     <a href="./16S-Metabarcoding-with-DADA2.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
@@ -398,7 +402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#software-requirements" id="toc-software-requirements" class="nav-link" data-scroll-target="#software-requirements">Software requirements</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quadram-institute-bioscience/your-repo/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/your-repo/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -440,6 +444,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1 class="unnumbered">Introduction</h1>
 <section id="about-this-training" class="level2">
 <h2 class="anchored" data-anchor-id="about-this-training">About this training</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/overview.png" class="img-fluid figure-img"></p>
+<figcaption>overview</figcaption>
+</figure>
+</div>
 <p>This is a tutorial to analyse a metabarcoding dataset (in our case 16S) using DADA2. The input is a set of FASTQ files (typically, and in our case Illumina paired-end), and the output will be:</p>
 <ul>
 <li>A set of <em>representative sequences</em> (ASVs)</li>
@@ -457,6 +467,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="what-is-16s-metabarcoding" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-16s-metabarcoding">What is 16S metabarcoding?</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/rdna.png" class="img-fluid figure-img"></p>
+<figcaption>rDNA</figcaption>
+</figure>
+</div>
 <p>16S metabarcoding is a culture-independent method to profile the bacterial communities present in a sample. It works by amplifying and sequencing a specific region of the bacterial 16S ribosomal RNA gene, a highly conserved gene found in virtually all bacteria.</p>
 <p>A key feature of the gene is an alternation of very conserved regions (where we can design “universal primers” and hypervariable regions).</p>
 <p>The typical workflow (<em>and its biases</em>) is:</p>
@@ -1010,7 +1026,7 @@ Export (RDS, CSV)</code></pre>
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quadram-institute-bioscience/your-repo/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/your-repo/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org">Quarto</a></p>
 </div>
