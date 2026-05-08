@@ -1,0 +1,430 @@
+---
+title: "16S DADA2 Analysis — Cucumber Fermentation Dataset"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+## Setup
+
+```{r libraries, message=FALSE, warning=FALSE}
+library(dada2)
+library(tidyverse)
+library(phyloseq)
+library(Biostrings)
+```
+
+```{r paths}
+path_reads    <- "/qib/platforms/Informatics/transfer/outgoing/training/metabarcoding-cucumber-reads/"
+path_silva    <- "/qib/platforms/Informatics/transfer/outgoing/training/metabarcoding-db/silva_nr99_v138.2_toGenus_trainset.fa.gz"
+path_filtered <- "filtered"
+path_precomp  <- "precomputed"
+
+dir.create(path_filtered, showWarnings = FALSE)
+dir.create(path_precomp,  showWarnings = FALSE)
+```
+
+## Quality assessment
+
+Reads are primer-trimmed (cutadapt, primers: F `CCTACGGGNGGCWGCAG`, R `GGACTACHVGGGTATCTAATCC`).
+
+```{r find-files}
+fnFs <- sort(list.files(path_reads, pattern = "_R1.fastq.gz", full.names = TRUE))
+fnRs <- sort(list.files(path_reads, pattern = "_R2.fastq.gz", full.names = TRUE))
+cat("Forward:", length(fnFs), "  Reverse:", length(fnRs), "\n")
+
+sample.names <- sub("_R1\\.fastq\\.gz$", "", basename(fnFs))
+head(sample.names, 8)
+```
+
+```{r qc-forward, fig.width=10, fig.height=6}
+plotQualityProfile(fnFs[1:6])
+```
+
+```{r qc-reverse, fig.width=10, fig.height=6}
+plotQualityProfile(fnRs[1:6])
+```
+
+## Filtering and trimming
+
+```{r filtered-paths}
+filtFs <- file.path(path_filtered, paste0(sample.names, "_F_filt.fastq.gz"))
+filtRs <- file.path(path_filtered, paste0(sample.names, "_R_filt.fastq.gz"))
+names(filtFs) <- sample.names
+names(filtRs) <- sample.names
+```
+
+```{r filter-trim, cache=TRUE}
+out <- filterAndTrim(
+  fnFs, filtFs,
+  fnRs, filtRs,
+  truncLen    = c(260, 250),
+  maxN        = 0,
+  maxEE       = c(2, 2),
+  truncQ      = 10,
+  rm.phix     = TRUE,
+  compress    = TRUE,
+  multithread = TRUE
+)
+saveRDS(out, file.path(path_precomp, "out.rds"))
+```
+
+```{r filter-stats}
+filter_stats <- as.data.frame(out)
+filter_stats$sample   <- rownames(filter_stats)
+filter_stats$pct_kept <- round(100 * filter_stats$reads.out / filter_stats$reads.in, 1)
+filter_stats[, c("sample", "reads.in", "reads.out", "pct_kept")]
+
+cat("Median retained:", median(filter_stats$pct_kept), "%\n")
+cat("Minimum retained:", min(filter_stats$pct_kept), "%\n")
+```
+
+```{r check-filtered}
+exists_F <- file.exists(filtFs)
+exists_R <- file.exists(filtRs)
+
+if (any(!exists_F | !exists_R)) {
+  dropped <- sample.names[!exists_F | !exists_R]
+  message("Excluded (no reads after filtering): ", paste(dropped, collapse = ", "))
+  filtFs <- filtFs[exists_F & exists_R]
+  filtRs <- filtRs[exists_F & exists_R]
+  sample.names <- names(filtFs)
+}
+cat("Samples remaining:", length(sample.names), "\n")
+```
+
+## Error rate modelling
+
+NextSeq 2000 produces binned quality scores; we use a modified loess function (Option 4) suited for sparse, discrete quality levels.
+
+```{r errfun-mod4}
+loessErrfun_mod4 <- function(trans) {
+  qq  <- as.numeric(colnames(trans))
+  est <- matrix(0, nrow = 0, ncol = length(qq))
+
+  for (nti in c("A", "C", "G", "T")) {
+    for (ntj in c("A", "C", "G", "T")) {
+      if (nti != ntj) {
+        errs  <- trans[paste0(nti, "2", ntj), ]
+        tot   <- colSums(trans[paste0(nti, "2", c("A", "C", "G", "T")), ])
+        rlogp <- log10((errs + 1) / tot)
+        rlogp[is.infinite(rlogp)] <- NA
+
+        df <- data.frame(q = qq, errs = errs, tot = tot, rlogp = rlogp)
+
+        mod.lo <- loess(rlogp ~ q, df,
+                        weights = log10(tot),
+                        degree  = 1,
+                        span    = 0.95)
+
+        pred <- predict(mod.lo, qq)
+        maxrli <- max(which(!is.na(pred)))
+        minrli <- min(which(!is.na(pred)))
+        pred[seq_along(pred) > maxrli] <- pred[[maxrli]]
+        pred[seq_along(pred) < minrli] <- pred[[minrli]]
+        est <- rbind(est, 10^pred)
+      }
+    }
+  }
+
+  MAX_ERROR_RATE <- 0.25
+  MIN_ERROR_RATE <- 1e-7
+  est[est > MAX_ERROR_RATE] <- MAX_ERROR_RATE
+  est[est < MIN_ERROR_RATE] <- MIN_ERROR_RATE
+
+  estorig <- est
+  est <- est %>%
+    data.frame() %>%
+    mutate(across(everything(), ~ if_else(. < X40, X40, .))) %>%
+    as.matrix()
+  rownames(est) <- rownames(estorig)
+  colnames(est) <- colnames(estorig)
+
+  err <- rbind(
+    1 - colSums(est[1:3, ]),  est[1:3, ],
+    est[4, ],  1 - colSums(est[4:6, ]),  est[5:6, ],
+    est[7:8, ], 1 - colSums(est[7:9, ]), est[9, ],
+    est[10:12, ], 1 - colSums(est[10:12, ])
+  )
+  rownames(err) <- paste0(rep(c("A", "C", "G", "T"), each = 4), "2",
+                           c("A", "C", "G", "T"))
+  colnames(err) <- colnames(trans)
+  return(err)
+}
+```
+
+```{r learn-errors, cache=TRUE}
+errF_file <- file.path(path_precomp, "errF.rds")
+errR_file <- file.path(path_precomp, "errR.rds")
+
+if (!file.exists(errF_file)) {
+  errF <- learnErrors(filtFs, multithread = TRUE, nbases = 1e10,
+                      errorEstimationFunction = loessErrfun_mod4, verbose = TRUE)
+  saveRDS(errF, errF_file)
+} else {
+  errF <- readRDS(errF_file)
+}
+
+if (!file.exists(errR_file)) {
+  errR <- learnErrors(filtRs, multithread = TRUE, nbases = 1e10,
+                      errorEstimationFunction = loessErrfun_mod4, verbose = TRUE)
+  saveRDS(errR, errR_file)
+} else {
+  errR <- readRDS(errR_file)
+}
+```
+
+```{r plot-errors, fig.width=10, fig.height=8}
+plotErrors(errF, nominalQ = TRUE)
+plotErrors(errR, nominalQ = TRUE)
+```
+
+## Denoising, merging and chimera removal
+
+```{r denoise, cache=TRUE}
+dadaFs_file <- file.path(path_precomp, "dadaFs.rds")
+dadaRs_file <- file.path(path_precomp, "dadaRs.rds")
+
+if (!file.exists(dadaFs_file)) {
+  dadaFs <- dada(filtFs, err = errF, multithread = TRUE)
+  saveRDS(dadaFs, dadaFs_file)
+} else {
+  dadaFs <- readRDS(dadaFs_file)
+}
+
+if (!file.exists(dadaRs_file)) {
+  dadaRs <- dada(filtRs, err = errR, multithread = TRUE)
+  saveRDS(dadaRs, dadaRs_file)
+} else {
+  dadaRs <- readRDS(dadaRs_file)
+}
+
+dadaFs[[1]]
+```
+
+```{r merge, cache=TRUE}
+mergers_file <- file.path(path_precomp, "mergers.rds")
+
+if (!file.exists(mergers_file)) {
+  mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose = TRUE)
+  saveRDS(mergers, mergers_file)
+} else {
+  mergers <- readRDS(mergers_file)
+}
+```
+
+```{r seqtab}
+seqtab <- makeSequenceTable(mergers)
+cat("Dimensions (samples × ASVs):", dim(seqtab), "\n")
+
+seq_lengths <- table(nchar(getSequences(seqtab)))
+barplot(seq_lengths, xlab = "Length (bp)", ylab = "ASVs",
+        main = "ASV length distribution (before chimera removal)", las = 2)
+```
+
+```{r chimera, cache=TRUE}
+seqtab_file <- file.path(path_precomp, "seqtab_nochim.rds")
+
+if (!file.exists(seqtab_file)) {
+  seqtab.nochim <- removeBimeraDenovo(seqtab, method = "consensus",
+                                       multithread = TRUE, verbose = TRUE)
+  saveRDS(seqtab.nochim, seqtab_file)
+} else {
+  seqtab.nochim <- readRDS(seqtab_file)
+}
+
+cat("ASVs before:", ncol(seqtab), " After:", ncol(seqtab.nochim), "\n")
+cat("Reads retained:", round(100 * sum(seqtab.nochim) / sum(seqtab), 1), "%\n")
+
+seq_lengths_nc <- table(nchar(getSequences(seqtab.nochim)))
+barplot(seq_lengths_nc, xlab = "Length (bp)", ylab = "ASVs",
+        main = "ASV length distribution (after chimera removal)", las = 2)
+```
+
+## Read tracking
+
+```{r tracking}
+getN <- function(x) sum(getUniques(x))
+
+track <- cbind(
+  out,
+  denoisedF = sapply(dadaFs, getN),
+  denoisedR = sapply(dadaRs, getN),
+  merged    = sapply(mergers, getN),
+  nonchim   = rowSums(seqtab.nochim)
+)
+colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
+rownames(track) <- sample.names
+
+write.csv(track, "dada2_QC.csv")
+track
+```
+
+```{r tracking-plot, fig.width=9, fig.height=5}
+step_labels <- c(input = "Raw Input", filtered = "Quality Filtered",
+                 denoisedF = "Denoised (Fwd)", denoisedR = "Denoised (Rev)",
+                 merged = "Merged Pairs", nonchim = "Non-chimeric")
+
+as.data.frame(track) %>%
+  rownames_to_column("Sample") %>%
+  pivot_longer(-Sample, names_to = "Step", values_to = "Reads") %>%
+  mutate(Step = factor(Step, levels = names(step_labels))) %>%
+  ggplot(aes(x = Step, y = Reads, fill = Step)) +
+  geom_boxplot(outlier.size = 1) +
+  scale_x_discrete(labels = step_labels) +
+  scale_fill_viridis_d() +
+  labs(x = "Pipeline step", y = "Reads", title = "Read counts through the DADA2 pipeline") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none")
+```
+
+## Taxonomy assignment
+
+Uses the SILVA v138.2 reference database (Kingdom → Genus, naive Bayesian classifier).
+
+```{r assign-taxonomy, cache=TRUE}
+taxa_file <- file.path(path_precomp, "taxa.rds")
+
+if (!file.exists(taxa_file)) {
+  taxa <- assignTaxonomy(seqtab.nochim, path_silva, multithread = TRUE, verbose = TRUE)
+  saveRDS(taxa, taxa_file)
+} else {
+  taxa <- readRDS(taxa_file)
+}
+
+taxa.print <- taxa
+rownames(taxa.print) <- NULL
+head(taxa.print, 10)
+```
+
+```{r classification-summary, fig.width=7, fig.height=4}
+taxa_df <- as.data.frame(taxa)
+levels  <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus")
+
+classif <- data.frame(
+  Level = factor(levels, levels = levels),
+  ASVs_classified = sapply(levels, function(lv) sum(!is.na(taxa_df[[lv]]))),
+  Total = nrow(taxa_df)
+) %>%
+  mutate(Percentage = round(100 * ASVs_classified / Total, 1))
+
+ggplot(classif, aes(x = Level, y = Percentage, fill = Level)) +
+  geom_col(width = 0.7) +
+  geom_text(aes(label = paste0(Percentage, "%")), vjust = -0.4, size = 3.5) +
+  scale_fill_viridis_d() +
+  labs(title = "ASVs classified at each taxonomic level",
+       x = "Taxonomic level", y = "% of ASVs") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") +
+  ylim(0, 110)
+```
+
+## Phyloseq object and export
+
+Sample names encode the experimental design: `Group_Timepoint_Replicate`.
+
+```{r metadata}
+metadata <- data.frame(
+  SampleID  = sample.names,
+  row.names = sample.names,
+  stringsAsFactors = FALSE
+) %>%
+  mutate(
+    Group = case_when(
+      startsWith(SampleID, "Lactobacillus") ~ "Lactobacillus",
+      startsWith(SampleID, "Spontaneous")   ~ "Spontaneous",
+      startsWith(SampleID, "Commercial")    ~ "Commercial",
+      startsWith(SampleID, "Control")       ~ "Control",
+      TRUE ~ "Unknown"
+    ),
+    Timepoint = case_when(
+      grepl("_H24_", SampleID) ~ "H24",
+      grepl("_H48_", SampleID) ~ "H48",
+      grepl("_W1_",  SampleID) ~ "W1",
+      grepl("_W2_",  SampleID) ~ "W2",
+      TRUE ~ NA_character_
+    ),
+    Replicate = as.integer(sub(".*_R(\\d+)$", "\\1", SampleID)),
+    IsControl = Group == "Control"
+  )
+
+stopifnot(all(rownames(seqtab.nochim) %in% rownames(metadata)))
+metadata
+```
+
+```{r phyloseq-build}
+metadata_matched <- metadata[rownames(seqtab.nochim), ]
+seqtab_matched   <- seqtab.nochim[rownames(metadata_matched), ]
+stopifnot(all(rownames(metadata_matched) == rownames(seqtab_matched)))
+
+otu <- otu_table(t(seqtab_matched), taxa_are_rows = TRUE)
+tax <- tax_table(taxa)
+sd  <- sample_data(metadata_matched)
+
+ps <- phyloseq(otu, sd, tax)
+
+dna        <- DNAStringSet(taxa_names(ps))
+names(dna) <- taxa_names(ps)
+ps         <- merge_phyloseq(ps, dna)
+
+taxa_names(ps) <- paste0("ASV", seq(ntaxa(ps)))
+ps
+```
+
+Remove mitochondrial and chloroplast sequences, then ASVs unclassified at Family level.
+
+```{r filter-contaminants}
+ps_filtered <- ps %>%
+  subset_taxa(
+    (is.na(Family) | !grepl("mitochondria", Family, ignore.case = TRUE)) &
+    (is.na(Order)  | !grepl("mitochondria", Order,  ignore.case = TRUE)) &
+    (is.na(Genus)  | !grepl("mitochondria", Genus,  ignore.case = TRUE)) &
+    (is.na(Family) | !grepl("chloroplast",  Family, ignore.case = TRUE)) &
+    (is.na(Order)  | !grepl("chloroplast",  Order,  ignore.case = TRUE)) &
+    (is.na(Order)  | Order != "Chloroplastida")
+  )
+
+cat("Removed (mitochondria/chloroplasts):", ntaxa(ps) - ntaxa(ps_filtered), "\n")
+
+ps_final <- ps_filtered %>%
+  subset_taxa(!is.na(Family) & Family != "")
+
+cat("Removed (unclassified at Family):", ntaxa(ps_filtered) - ntaxa(ps_final), "\n")
+cat("Final ASVs:", ntaxa(ps_final), "\n")
+cat("Total reads:", sum(sample_sums(ps_final)), "\n")
+```
+
+```{r filter-summary}
+cat("\n=== FILTERING SUMMARY ===\n")
+cat("After chimera removal:            ", ntaxa(ps), "ASVs\n")
+cat("After removing mito/chloroplasts: ", ntaxa(ps_filtered), "ASVs\n")
+cat("After removing unclassified fam:  ", ntaxa(ps_final), "ASVs\n")
+cat("Samples:                          ", nsamples(ps_final), "\n")
+cat("Total reads:                      ", sum(sample_sums(ps_final)), "\n")
+```
+
+```{r export}
+saveRDS(ps_final, "phyloseq_object.rds")
+
+asv_sequences <- data.frame(
+  ASV_ID   = taxa_names(ps_final),
+  Sequence = as.character(refseq(ps_final)),
+  stringsAsFactors = FALSE
+)
+write.csv(asv_sequences, "asv_sequences_map.csv", row.names = FALSE)
+
+writeXStringSet(refseq(ps_final), "asv_sequences_map.fasta")
+
+asv_counts   <- as.data.frame(otu_table(ps_final))
+tax_table_df <- as.data.frame(tax_table(ps_final))
+write.csv(cbind(tax_table_df, asv_counts), "asv_tax_table.csv", row.names = TRUE)
+
+sample_abundances <- as.data.frame(t(otu_table(ps_final)))
+sample_metadata   <- as.data.frame(sample_data(ps_final))
+write.csv(cbind(sample_metadata, sample_abundances), "samples_with_abundances.csv", row.names = TRUE)
+
+cat("Saved: phyloseq_object.rds, asv_sequences_map.csv, asv_sequences_map.fasta,\n")
+cat("       asv_tax_table.csv, samples_with_abundances.csv\n")
+```
