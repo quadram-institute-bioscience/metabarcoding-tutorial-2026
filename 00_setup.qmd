@@ -48,7 +48,7 @@ Open RStudio and run the following once to install all dependencies:
 #| eval: false
 
 # Install some tidyverse packages from CRAN
-install.packages(c("tidyverse","tidyr","tibble","readr","ggplot2","patchwork"))
+install.packages(c("tidyr","tibble","readr","ggplot2","patchwork"))
 
 # Install the Bioconductor package manager
 if (!requireNamespace("BiocManager", quietly = TRUE))

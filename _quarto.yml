@@ -13,6 +13,7 @@ book:
     logo-alt: "Quadram Institute Bioscience"
   chapters:
     - index.qmd
+    - 00_setup.qmd
     - 01_setup_quality.qmd
     - 02_filter_trim.qmd
     - 03_error_models.qmd
