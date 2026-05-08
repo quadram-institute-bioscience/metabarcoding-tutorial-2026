@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.37">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-<meta name="author" content="Quadram Institute Bioscience">
-<meta name="dcterms.date" content="2026-05-08">
-
-<title>16S Metabarcoding with DADA2</title>
+<title>1&nbsp; How to Run This Tutorial – 16S Metabarcoding with DADA2</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -62,7 +57,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -70,7 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./00_setup.html" rel="next">
+<link href="./01_setup_quality.html" rel="next">
+<link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -84,8 +79,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-576413e428a37d8ed27b4a9cb944cc35.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-dark-e9d9fa513417b44937a3bbe1e12c5f34.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-576413e428a37d8ed27b4a9cb944cc35.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-576413e428a37d8ed27b4a9cb944cc35.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -111,12 +105,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<style>html{ scroll-behavior: smooth; }</style>
-
-
+}</script><style>html{ scroll-behavior: smooth; }</style>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 </head>
-
 <body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -282,30 +274,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00_setup.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">How to Run This Tutorial</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="https://corebio.info/" class="sidebar-logo-link">
-      <img src="./images/metabarcoding.png" alt="Quadram Institute Bioscience" class="sidebar-logo light-content py-0 d-lg-inline d-none">
-      <img src="./images/metabarcoding.png" alt="Quadram Institute Bioscience" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
-      </a>
+      <img src="./images/metabarcoding.png" alt="Quadram Institute Bioscience" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="./images/metabarcoding.png" alt="Quadram Institute Bioscience" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">16S Metabarcoding with DADA2</a> 
         <div class="sidebar-tools-main tools-wide">
@@ -314,20 +298,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
-          <li>
-            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
               <i class="bi bi-twitter pe-1"></i>
             Twitter
             </a>
           </li>
           <li>
-            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=%7Curl%7C">
               <i class="bi bi-linkedin pe-1"></i>
             LinkedIn
             </a>
           </li>
       </ul>
-    </div>
+</div>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
     </div>
@@ -339,15 +323,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./00_setup.html" class="sidebar-item-text sidebar-link">
+  <a href="./00_setup.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">How to Run This Tutorial</span></span></a>
   </div>
 </li>
@@ -388,221 +372,159 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+<li><a href="#tldr-minimal-downloads" id="toc-tldr-minimal-downloads" class="nav-link active" data-scroll-target="#tldr-minimal-downloads"><span class="header-section-number">1.1</span> TLDR; Minimal downloads</a></li>
+  <li>
+<a href="#the-dataset-getting-the-raw-reads" id="toc-the-dataset-getting-the-raw-reads" class="nav-link" data-scroll-target="#the-dataset-getting-the-raw-reads"><span class="header-section-number">1.2</span> The dataset: Getting the raw reads</a>
   <ul class="collapse">
-  <li><a href="#about-this-training" id="toc-about-this-training" class="nav-link" data-scroll-target="#about-this-training">About this training</a></li>
-  <li><a href="#trainers" id="toc-trainers" class="nav-link" data-scroll-target="#trainers">Trainers</a></li>
-  <li><a href="#what-is-16s-metabarcoding" id="toc-what-is-16s-metabarcoding" class="nav-link" data-scroll-target="#what-is-16s-metabarcoding">What is 16S metabarcoding?</a></li>
-  <li><a href="#asvs-vs-otus" id="toc-asvs-vs-otus" class="nav-link" data-scroll-target="#asvs-vs-otus">ASVs vs OTUs</a></li>
-  <li><a href="#the-dataset" id="toc-the-dataset" class="nav-link" data-scroll-target="#the-dataset">The dataset</a></li>
-  <li><a href="#pipeline-overview" id="toc-pipeline-overview" class="nav-link" data-scroll-target="#pipeline-overview">Pipeline overview</a></li>
-  <li><a href="#software-requirements" id="toc-software-requirements" class="nav-link" data-scroll-target="#software-requirements">Software requirements</a></li>
-  </ul></li>
+<li><a href="#downloading-via-the-ena-browser" id="toc-downloading-via-the-ena-browser" class="nav-link" data-scroll-target="#downloading-via-the-ena-browser"><span class="header-section-number">1.2.1</span> Downloading via the ENA browser</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+</li>
+  <li>
+<a href="#running-locally-with-rstudio" id="toc-running-locally-with-rstudio" class="nav-link" data-scroll-target="#running-locally-with-rstudio"><span class="header-section-number">1.3</span> Running locally with RStudio</a>
+  <ul class="collapse">
+<li><a href="#install-r-and-rstudio" id="toc-install-r-and-rstudio" class="nav-link" data-scroll-target="#install-r-and-rstudio"><span class="header-section-number">1.3.1</span> Install R and RStudio</a></li>
+  <li><a href="#install-required-packages" id="toc-install-required-packages" class="nav-link" data-scroll-target="#install-required-packages"><span class="header-section-number">1.3.2</span> Install required packages</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#running-on-the-nbi-hpc" id="toc-running-on-the-nbi-hpc" class="nav-link" data-scroll-target="#running-on-the-nbi-hpc"><span class="header-section-number">1.4</span> Running on the NBI HPC</a>
+  <ul class="collapse">
+<li><a href="#step-by-step" id="toc-step-by-step" class="nav-link" data-scroll-target="#step-by-step"><span class="header-section-number">1.4.1</span> Step-by-step</a></li>
+  <li><a href="#installing-packages-on-the-hpc" id="toc-installing-packages-on-the-hpc" class="nav-link" data-scroll-target="#installing-packages-on-the-hpc"><span class="header-section-number">1.4.2</span> Installing packages on the HPC</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/00_setup.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">16S Metabarcoding with DADA2</h1>
-<p class="subtitle lead">A step-by-step tutorial using cucumber fermentation data</p>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">1</span>&nbsp; <span class="chapter-title">How to Run This Tutorial</span>
+</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Quadram Institute Bioscience </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">May 8, 2026</p>
-    </div>
-  </div>
   
     
   </div>
   
 
 
-</header>
-
-
-<section id="introduction" class="level1 unnumbered">
-<h1 class="unnumbered">Introduction</h1>
-<section id="about-this-training" class="level2">
-<h2 class="anchored" data-anchor-id="about-this-training">About this training</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/overview.png" class="img-fluid figure-img"></p>
-<figcaption>overview</figcaption>
-</figure>
-</div>
-<p>This is a tutorial to analyse a metabarcoding dataset (in our case 16S) using DADA2. The input is a set of FASTQ files (typically, and in our case Illumina paired-end), and the output will be:</p>
+</header><p>Before diving into the analysis, you need two things: the raw sequencing reads and a working R environment with the required packages. This preliminary page covers both.</p>
+<section id="tldr-minimal-downloads" class="level2" data-number="1.1"><h2 data-number="1.1" class="anchored" data-anchor-id="tldr-minimal-downloads">
+<span class="header-section-number">1.1</span> TLDR; Minimal downloads</h2>
 <ul>
-<li>A set of <em>representative sequences</em> (ASVs)</li>
-<li>A <em>feature counts table</em> (raw counts of ASVs per sample)</li>
-<li>The <em>taxonomy</em> of each representative sequence</li>
-</ul>
-<p>We will use <a href="https://benjjneb.github.io/dada2/">DADA2</a>, and for our example will will use a recent dataset sequenced on NextSeq 2000, that uses a <em>binned quality</em> model that would not work nicely with the standard DADA2 tutorials.</p>
-<blockquote class="blockquote">
-<p>Citation: Callahan <em>et al</em>. (2026) <a href="https://www.nature.com/articles/nmeth.3869">DADA2: High-resolution sample inference from Illumina amplicon data</a></p>
-</blockquote>
-</section>
-<section id="trainers" class="level2">
-<h2 class="anchored" data-anchor-id="trainers">Trainers</h2>
-<p>This session is designed and delivered by <a href="https://quadram-institute-bioscience.github.io/">QIB Core Bioinformatics</a> and in particular Andrea Telatin, Judit Talas and Alise Ponsero.</p>
-</section>
-<section id="what-is-16s-metabarcoding" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-16s-metabarcoding">What is 16S metabarcoding?</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/rdna.png" class="img-fluid figure-img"></p>
-<figcaption>rDNA</figcaption>
-</figure>
-</div>
-<p>16S metabarcoding is a culture-independent method to profile the bacterial communities present in a sample. It works by amplifying and sequencing a specific region of the bacterial 16S ribosomal RNA gene, a highly conserved gene found in virtually all bacteria.</p>
-<p>A key feature of the gene is an alternation of very conserved regions (where we can design “universal primers” and hypervariable regions).</p>
-<p>The typical workflow (<em>and its biases</em>) is:</p>
+<li>A subset of the reads from <a href="https://zenodo.org/records/20082786">zenodo.org/records/20082786</a>
+</li>
+<li>Silva138.2 Database for DADA2 from <a href="https://zenodo.org/records/14169026/files/silva_nr99_v138.2_toGenus_trainset.fa.gz?download=1">zenodo.org/records/14169026</a>
+</li>
+<li>A script to install the required packages from <a href="https://gist.githubusercontent.com/telatin/61fc1dff358a38596add16bcbda247f5/raw/5d8a37307e1cff0b49d8871a0c5515bc5854c9cc/metabar_setup.R">GitHub</a>
+</li>
+</ul></section><section id="the-dataset-getting-the-raw-reads" class="level2" data-number="1.2"><h2 data-number="1.2" class="anchored" data-anchor-id="the-dataset-getting-the-raw-reads">
+<span class="header-section-number">1.2</span> The dataset: Getting the raw reads</h2>
+<p>The dataset used throughout this tutorial is publicly available in the <strong>European Nucleotide Archive (ENA)</strong> under accession <a href="https://www.ebi.ac.uk/ena/browser/view/PRJEB112055">PRJEB112055</a>.</p>
+<section id="downloading-via-the-ena-browser" class="level3" data-number="1.2.1"><h3 data-number="1.2.1" class="anchored" data-anchor-id="downloading-via-the-ena-browser">
+<span class="header-section-number">1.2.1</span> Downloading via the ENA browser</h3>
 <ol type="1">
-<li>Extract DNA from the sample (<em>are all cells breaking?</em>)</li>
-<li>PCR-amplify the 16S gene using universal primers (<em>are we preferentially amplifying some taxa?</em>)</li>
-<li>Sequence the amplicons on an Illumina platform (paired-end) (<em>we need to sequence only a fraction of the 1500bp gene!</em>)</li>
-<li>Process the raw reads computationally to identify and quantify microbial taxa</li>
+<li>Go to <a href="https://www.ebi.ac.uk/ena/browser/view/PRJEB112055" class="uri">https://www.ebi.ac.uk/ena/browser/view/PRJEB112055</a>
+</li>
+<li>Click the <strong>“Download”</strong> icon and select <strong>“FASTQ files (FTP)”</strong> to get a TSV file listing the FTP URLs for every sample.</li>
+<li>Use <code>wget</code> to download the files listed in the TSV:</li>
 </ol>
-</section>
-<section id="asvs-vs-otus" class="level2">
-<h2 class="anchored" data-anchor-id="asvs-vs-otus">ASVs vs OTUs</h2>
-<p>Historically, 16S data were analysed by clustering similar sequences into <strong>Operational Taxonomic Units (OTUs)</strong> at a fixed similarity threshold (typically 97%). One of the many popular packages offering OTU analysis is <a href="https://doi.org/10.7717/peerj.1487">Mothur</a>. This approach is fast but loses resolution, meaning that sequences that differ by even one nucleotide are collapsed together. This approach was simultaneously dealing with sequencing errors and simplyfing the identification of key taxa.</p>
-<p>Modern pipelines instead resolve <strong><a href="https://doi.org/10.1038/ismej.2017.119">Amplicon Sequence Variants (ASVs)</a></strong>: exact, denoised sequences inferred from the data.</p>
-<p>ASVs offer some benefits:</p>
-<ul>
-<li>Higher resolution — single-nucleotide differences are preserved</li>
-<li>Reproducibility — the same ASV sequence means the same biological entity across studies and platforms</li>
-<li>No arbitrary threshold — no need to choose a similarity cutoff (historically OTUs were clustered at 97% for no good reason)</li>
-</ul>
-<p>But also some disadvantages:</p>
-<ul>
-<li>Some species will be <a href="https://doi.org/10.1128/msphere.00191-21">artificially split</a> into multiple ASVs (there is variability in 16S opersons in the same species)</li>
-<li>Some algorithms like DADA2 are sensitive to sequencing quality</li>
-</ul>
-<p>DADA2 is the leading ASV-based pipeline and is what we will use throughout this tutorial.</p>
-</section>
-<section id="the-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="the-dataset">The dataset</h2>
-<p>This tutorial uses real 16S amplicon data from a cucumber <a href="https://www.ebi.ac.uk/ena/browser/view/PRJEB112055">fermentation study</a>. The <a href="https://gist.github.com/telatin/9447c3dc9175ba500fe9f6a6f6df8d71"><strong>metadata file</strong></a> allows to download the raw reads.</p>
-<p>Three types of fermentation were compared at multiple time points:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 35%">
-<col style="width: 65%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Group</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Lactobacillus</strong></td>
-<td>Brine inoculated with a <em>Lactobacillus</em> starter culture</td>
-</tr>
-<tr class="even">
-<td><strong>Spontaneous</strong></td>
-<td>Brine fermented without a starter culture</td>
-</tr>
-<tr class="odd">
-<td><strong>Commercial</strong></td>
-<td>A commercially produced fermented cucumber product</td>
-</tr>
-<tr class="even">
-<td><strong>Controls</strong></td>
-<td>Negative controls (fermentation and extraction blanks)</td>
-</tr>
-</tbody>
-</table>
-<p>Time points: 24 hours (<code>H24</code>), 48 hours (<code>H48</code>), 1 week (<code>W1</code>), 2 weeks (<code>W2</code>). Each condition has three replicates. In total there are <strong>29 samples</strong>.</p>
-<p>Samples were sequenced on an <strong>Illumina NextSeq 2000</strong> — an important detail that affects how we model sequencing errors (explained in <a href="03_error_models.html" class="quarto-xref"><span>4&nbsp; Error Rate Modelling</span></a>).</p>
-</section>
-<section id="pipeline-overview" class="level2">
-<h2 class="anchored" data-anchor-id="pipeline-overview">Pipeline overview</h2>
-<pre><code>Raw reads (FASTQ)
-      │
-      ▼
-Quality assessment  ──── plotQualityProfile()
-      │
-      ▼
-Filtering &amp; trimming ─── filterAndTrim()
-      │
-      ▼
-Error rate modelling ─── learnErrors()   ◄─ key step for NextSeq 2000
-      │
-      ▼
-Denoising ────────────── dada()
-      │
-      ▼
-Merge paired reads ───── mergePairs()
-      │
-      ▼
-Sequence table ────────── makeSequenceTable()
-      │
-      ▼
-Chimera removal ────────── removeBimeraDenovo()
-      │
-      ▼
-Taxonomy assignment ─────── assignTaxonomy()
-      │
-      ▼
-Phyloseq object ─────────── phyloseq()
-      │
-      ▼
-Export (RDS, CSV)</code></pre>
-</section>
-<section id="software-requirements" class="level2">
-<h2 class="anchored" data-anchor-id="software-requirements">Software requirements</h2>
-<p>All packages can be installed from <a href="https://www.bioconductor.org">Bioconductor</a> / CRAN:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run once to install Bioconductor "installer"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"BiocManager"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"BiocManager"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># We can now install DADA2 and other packages</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="fu">c</span>(<span class="st">"dada2"</span>, <span class="st">"phyloseq"</span>, <span class="st">"Biostrings"</span>))</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># And tidyverse...</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"tidyverse"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The analysis was developed and tested with:</p>
-<ul>
-<li>R ≥ 4.3</li>
-<li>dada2 ≥ 1.28</li>
-<li>phyloseq ≥ 1.44</li>
-<li>tidyverse ≥ 2.0</li>
-</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the FTP links file from ENA</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-i</span> <span class="op">&lt;(</span><span class="fu">awk</span> <span class="at">-F</span><span class="st">'\t'</span> <span class="st">'NR&gt;1 {split($7,a,";"); for(i in a) print a[i]}'</span> filereport.tsv<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr></section></section><section id="running-locally-with-rstudio" class="level2" data-number="1.3"><h2 data-number="1.3" class="anchored" data-anchor-id="running-locally-with-rstudio">
+<span class="header-section-number">1.3</span> Running locally with RStudio</h2>
+<section id="install-r-and-rstudio" class="level3" data-number="1.3.1"><h3 data-number="1.3.1" class="anchored" data-anchor-id="install-r-and-rstudio">
+<span class="header-section-number">1.3.1</span> Install R and RStudio</h3>
+<ol type="1">
+<li>Download and install <strong>R</strong> (≥ 4.3, but latest is preferred) from <a href="https://cran.r-project.org/" class="uri">https://cran.r-project.org/</a>
+</li>
+<li>Download and install <strong>RStudio Desktop</strong> (free) from <a href="https://posit.co/download/rstudio-desktop/" class="uri">https://posit.co/download/rstudio-desktop/</a>
+</li>
+</ol></section><section id="install-required-packages" class="level3" data-number="1.3.2"><h3 data-number="1.3.2" class="anchored" data-anchor-id="install-required-packages">
+<span class="header-section-number">1.3.2</span> Install required packages</h3>
+<p>Open RStudio and run the following once to install all dependencies:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Install some tidyverse packages from CRAN</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tidyverse"</span>,<span class="st">"tidyr"</span>,<span class="st">"tibble"</span>,<span class="st">"readr"</span>,<span class="st">"ggplot2"</span>,<span class="st">"patchwork"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Install the Bioconductor package manager</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Install DADA2 and phyloseq from Bioconductor</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"dada2"</span>, <span class="st">"phyloseq"</span>, <span class="st">"Biostrings"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Installation can take several minutes the first time. Once complete, verify everything loaded correctly:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://benjjneb.github.io/dada2/">dada2</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Version check
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The tutorial was developed with dada2 ≥ 1.28, phyloseq ≥ 1.44, and tidyverse ≥ 2.0. If you see unexpected errors, check <code>packageVersion("dada2")</code> and update via <code>BiocManager::install("dada2")</code> if needed.</p>
+</div>
+</div>
+<hr></section></section><section id="running-on-the-nbi-hpc" class="level2" data-number="1.4"><h2 data-number="1.4" class="anchored" data-anchor-id="running-on-the-nbi-hpc">
+<span class="header-section-number">1.4</span> Running on the NBI HPC</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>HPC account required
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You need an active NBI HPC account to follow this route. If you do not have one, contact your line manager or the NBI IT helpdesk to request access.</p>
+</div>
+</div>
+<p>The NBI HPC provides RStudio through the <strong>Open on Demand</strong> web portal — no command-line setup required.</p>
+<section id="step-by-step" class="level3" data-number="1.4.1"><h3 data-number="1.4.1" class="anchored" data-anchor-id="step-by-step">
+<span class="header-section-number">1.4.1</span> Step-by-step</h3>
+<ol type="1">
+<li>Open your browser and go to <a href="https://ood.hpc.nbi.ac.uk/" class="uri">https://ood.hpc.nbi.ac.uk/</a>
+</li>
+<li>Log in with your NBI HPC credentials.</li>
+<li>In the top navigation bar click <strong>“Interactive Apps”</strong> and select <strong>RStudio</strong>.</li>
+<li>Choose the compute resources you need (a 8 cores and 64 GB RAM are enough for this tutorial) and click <strong>“Launch”</strong>.</li>
+<li>Wait for the job to start, then click <strong>“Connect to RStudio Server”</strong>.</li>
+<li>Run the <a href="https://gist.githubusercontent.com/telatin/61fc1dff358a38596add16bcbda247f5/raw/5d8a37307e1cff0b49d8871a0c5515bc5854c9cc/metabar_setup.R">installation script</a> to install dependencies</li>
+</ol></section><section id="installing-packages-on-the-hpc" class="level3" data-number="1.4.2"><h3 data-number="1.4.2" class="anchored" data-anchor-id="installing-packages-on-the-hpc">
+<span class="header-section-number">1.4.2</span> Installing packages on the HPC</h3>
+<p>The shared R installation on the HPC does <strong>not</strong> include DADA2, phyloseq, or tidyverse by default. Run the same installation commands as for a local setup — R will install the packages into your personal library (e.g.&nbsp;<code>~/r/lib/</code>):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"dada2"</span>, <span class="st">"phyloseq"</span>, <span class="st">"Biostrings"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"tidyverse"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 
 
-</section>
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -1014,32 +936,30 @@ Export (RDS, CSV)</code></pre>
       }
     }
   });
-  </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="Introduction">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Introduction</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./00_setup.html" class="pagination-link" aria-label="How to Run This Tutorial">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">How to Run This Tutorial</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./01_setup_quality.html" class="pagination-link" aria-label="Setup and Quality Assessment">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
 <p>© 2026 Quadram Institute Bioscience</p>
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/00_setup.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org">Quarto</a></p>
 </div>
   </div>
 </footer>
-
-
 
 
 <script src="site_libs/quarto-html/zenscroll-min.js"></script>

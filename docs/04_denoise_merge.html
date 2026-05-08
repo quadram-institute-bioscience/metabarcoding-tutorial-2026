@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>4&nbsp; Denoising, Merging and Chimera Removal – 16S Metabarcoding with DADA2</title>
+<title>5&nbsp; Denoising, Merging and Chimera Removal – 16S Metabarcoding with DADA2</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -278,7 +278,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04_denoise_merge.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04_denoise_merge.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -331,38 +331,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./00_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">How to Run This Tutorial</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./01_setup_quality.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02_filter_trim.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03_error_models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04_denoise_merge.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./05_taxonomy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./06_phyloseq_export.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span></a>
   </div>
 </li>
     </ul>
@@ -374,23 +380,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
 <li>
-<a href="#denoising-with-dada2" id="toc-denoising-with-dada2" class="nav-link active" data-scroll-target="#denoising-with-dada2"><span class="header-section-number">4.1</span> Denoising with DADA2</a>
+<a href="#denoising-with-dada2" id="toc-denoising-with-dada2" class="nav-link active" data-scroll-target="#denoising-with-dada2"><span class="header-section-number">5.1</span> Denoising with DADA2</a>
   <ul class="collapse">
-<li><a href="#what-does-the-dada2-output-tell-us" id="toc-what-does-the-dada2-output-tell-us" class="nav-link" data-scroll-target="#what-does-the-dada2-output-tell-us"><span class="header-section-number">4.1.1</span> What does the dada2 output tell us?</a></li>
+<li><a href="#what-does-the-dada2-output-tell-us" id="toc-what-does-the-dada2-output-tell-us" class="nav-link" data-scroll-target="#what-does-the-dada2-output-tell-us"><span class="header-section-number">5.1.1</span> What does the dada2 output tell us?</a></li>
   </ul>
 </li>
-  <li><a href="#merging-paired-end-reads" id="toc-merging-paired-end-reads" class="nav-link" data-scroll-target="#merging-paired-end-reads"><span class="header-section-number">4.2</span> Merging paired-end reads</a></li>
+  <li><a href="#merging-paired-end-reads" id="toc-merging-paired-end-reads" class="nav-link" data-scroll-target="#merging-paired-end-reads"><span class="header-section-number">5.2</span> Merging paired-end reads</a></li>
   <li>
-<a href="#build-the-sequence-table" id="toc-build-the-sequence-table" class="nav-link" data-scroll-target="#build-the-sequence-table"><span class="header-section-number">4.3</span> Build the sequence table</a>
+<a href="#build-the-sequence-table" id="toc-build-the-sequence-table" class="nav-link" data-scroll-target="#build-the-sequence-table"><span class="header-section-number">5.3</span> Build the sequence table</a>
   <ul class="collapse">
-<li><a href="#sequence-length-distribution" id="toc-sequence-length-distribution" class="nav-link" data-scroll-target="#sequence-length-distribution"><span class="header-section-number">4.3.1</span> Sequence length distribution</a></li>
+<li><a href="#sequence-length-distribution" id="toc-sequence-length-distribution" class="nav-link" data-scroll-target="#sequence-length-distribution"><span class="header-section-number">5.3.1</span> Sequence length distribution</a></li>
   </ul>
 </li>
-  <li><a href="#chimera-removal" id="toc-chimera-removal" class="nav-link" data-scroll-target="#chimera-removal"><span class="header-section-number">4.4</span> Chimera removal</a></li>
+  <li><a href="#chimera-removal" id="toc-chimera-removal" class="nav-link" data-scroll-target="#chimera-removal"><span class="header-section-number">5.4</span> Chimera removal</a></li>
   <li>
-<a href="#tracking-reads-through-the-pipeline" id="toc-tracking-reads-through-the-pipeline" class="nav-link" data-scroll-target="#tracking-reads-through-the-pipeline"><span class="header-section-number">4.5</span> Tracking reads through the pipeline</a>
+<a href="#tracking-reads-through-the-pipeline" id="toc-tracking-reads-through-the-pipeline" class="nav-link" data-scroll-target="#tracking-reads-through-the-pipeline"><span class="header-section-number">5.5</span> Tracking reads through the pipeline</a>
   <ul class="collapse">
-<li><a href="#visualise-read-tracking" id="toc-visualise-read-tracking" class="nav-link" data-scroll-target="#visualise-read-tracking"><span class="header-section-number">4.5.1</span> Visualise read tracking</a></li>
+<li><a href="#visualise-read-tracking" id="toc-visualise-read-tracking" class="nav-link" data-scroll-target="#visualise-read-tracking"><span class="header-section-number">5.5.1</span> Visualise read tracking</a></li>
   </ul>
 </li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/04_denoise_merge.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -398,7 +404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">
-<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span>
+<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span>
 </h1>
 </div>
 
@@ -413,8 +419,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="denoising-with-dada2" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="denoising-with-dada2">
-<span class="header-section-number">4.1</span> Denoising with DADA2</h2>
+</header><section id="denoising-with-dada2" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="denoising-with-dada2">
+<span class="header-section-number">5.1</span> Denoising with DADA2</h2>
 <p>The core DADA2 algorithm uses the error model learned in the previous chapter to distinguish true biological sequences from sequences that arose through PCR or sequencing errors. It works by asking: <em>given the error model, is this slightly different sequence more likely to be a genuine variant, or an error-derived copy of a more abundant sequence?</em></p>
 <p>The result is a set of <strong>Amplicon Sequence Variants (ASVs)</strong>: exact sequences with no artificial clustering.</p>
 <div class="cell">
@@ -498,8 +504,8 @@ Sample 28 - 208982 reads in 52167 unique sequences.
 Sample 29 - 256480 reads in 55448 unique sequences.</code></pre>
 </div>
 </div>
-<section id="what-does-the-dada2-output-tell-us" class="level3" data-number="4.1.1"><h3 data-number="4.1.1" class="anchored" data-anchor-id="what-does-the-dada2-output-tell-us">
-<span class="header-section-number">4.1.1</span> What does the dada2 output tell us?</h3>
+<section id="what-does-the-dada2-output-tell-us" class="level3" data-number="5.1.1"><h3 data-number="5.1.1" class="anchored" data-anchor-id="what-does-the-dada2-output-tell-us">
+<span class="header-section-number">5.1.1</span> What does the dada2 output tell us?</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Inspect the first sample's denoising result</span></span>
 <span><span class="va">dadaFs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -510,8 +516,8 @@ Key parameters: OMEGA_A = 1e-40, OMEGA_C = 1e-40, BAND_SIZE = 16</code></pre>
 </div>
 </div>
 <p>The output reports how many unique sequences were identified in the sample and how many reads support each one. The ratio of reads to unique sequences gives an indication of how much error correction was performed.</p>
-</section></section><section id="merging-paired-end-reads" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="merging-paired-end-reads">
-<span class="header-section-number">4.2</span> Merging paired-end reads</h2>
+</section></section><section id="merging-paired-end-reads" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="merging-paired-end-reads">
+<span class="header-section-number">5.2</span> Merging paired-end reads</h2>
 <p>After denoising, forward and reverse reads are merged to reconstruct the full amplicon sequence. Merging requires a minimum overlap region between the denoised forward and reverse reads — by default, at least 12 bp.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mergers_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">path_precomp</span>, <span class="st">"mergers.rds"</span><span class="op">)</span></span>
@@ -545,8 +551,8 @@ Key parameters: OMEGA_A = 1e-40, OMEGA_C = 1e-40, BAND_SIZE = 16</code></pre>
 </ol>
 </div>
 </div>
-</section><section id="build-the-sequence-table" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="build-the-sequence-table">
-<span class="header-section-number">4.3</span> Build the sequence table</h2>
+</section><section id="build-the-sequence-table" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="build-the-sequence-table">
+<span class="header-section-number">5.3</span> Build the sequence table</h2>
 <p><code>makeSequenceTable()</code> produces a sample × ASV matrix of read counts. This is the central data object in DADA2.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">seqtab</span> <span class="op">&lt;-</span> <span class="fu">makeSequenceTable</span><span class="op">(</span><span class="va">mergers</span><span class="op">)</span></span>
@@ -555,8 +561,8 @@ Key parameters: OMEGA_A = 1e-40, OMEGA_C = 1e-40, BAND_SIZE = 16</code></pre>
 <pre><code>Dimensions (samples × ASVs): 29 18934 </code></pre>
 </div>
 </div>
-<section id="sequence-length-distribution" class="level3" data-number="4.3.1"><h3 data-number="4.3.1" class="anchored" data-anchor-id="sequence-length-distribution">
-<span class="header-section-number">4.3.1</span> Sequence length distribution</h3>
+<section id="sequence-length-distribution" class="level3" data-number="5.3.1"><h3 data-number="5.3.1" class="anchored" data-anchor-id="sequence-length-distribution">
+<span class="header-section-number">5.3.1</span> Sequence length distribution</h3>
 <p>The expected amplicon length for the V3–V4 region is approximately 400–470 bp. Any sequences outside this range are likely artefacts (non-specific amplification or chimeras) and will often be removed in subsequent steps.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">seq_lengths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html">nchar</a></span><span class="op">(</span><span class="fu">getSequences</span><span class="op">(</span><span class="va">seqtab</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -583,8 +589,8 @@ Key parameters: OMEGA_A = 1e-40, OMEGA_C = 1e-40, BAND_SIZE = 16</code></pre>
 </div>
 </div>
 </div>
-</section></section><section id="chimera-removal" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="chimera-removal">
-<span class="header-section-number">4.4</span> Chimera removal</h2>
+</section></section><section id="chimera-removal" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="chimera-removal">
+<span class="header-section-number">5.4</span> Chimera removal</h2>
 <p>Chimeric sequences are PCR artefacts created when an incomplete extension product from one cycle acts as a primer in a subsequent cycle, fusing the 5′ end of one template with the 3′ end of another. DADA2 identifies chimeras using the <code>removeBimeraDenovo()</code> function, which checks whether each sequence can be reconstructed from two more-abundant “parent” sequences.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">seqtab_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">path_precomp</span>, <span class="st">"seqtab_nochim.rds"</span><span class="op">)</span></span>
@@ -651,8 +657,8 @@ Key parameters: OMEGA_A = 1e-40, OMEGA_C = 1e-40, BAND_SIZE = 16</code></pre>
 </div>
 </div>
 </div>
-</section><section id="tracking-reads-through-the-pipeline" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="tracking-reads-through-the-pipeline">
-<span class="header-section-number">4.5</span> Tracking reads through the pipeline</h2>
+</section><section id="tracking-reads-through-the-pipeline" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="tracking-reads-through-the-pipeline">
+<span class="header-section-number">5.5</span> Tracking reads through the pipeline</h2>
 <p>A key quality-control step is to track how many reads survive each stage of the pipeline. Large losses at any single step point to a specific problem.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">getN</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu">getUniques</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
@@ -703,8 +709,8 @@ Spontaneous_W2_R2    259494   208982    208097    208521 200762  151955
 Spontaneous_W2_R3    314666   256480    255722    255872 248160  210209</code></pre>
 </div>
 </div>
-<section id="visualise-read-tracking" class="level3" data-number="4.5.1"><h3 data-number="4.5.1" class="anchored" data-anchor-id="visualise-read-tracking">
-<span class="header-section-number">4.5.1</span> Visualise read tracking</h3>
+<section id="visualise-read-tracking" class="level3" data-number="5.5.1"><h3 data-number="5.5.1" class="anchored" data-anchor-id="visualise-read-tracking">
+<span class="header-section-number">5.5.1</span> Visualise read tracking</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">step_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
 <span>  input     <span class="op">=</span> <span class="st">"Raw Input"</span>,</span>
@@ -1159,12 +1165,12 @@ Spontaneous_W2_R3    314666   256480    255722    255872 248160  210209</code></
   });
   </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./03_error_models.html" class="pagination-link" aria-label="Error Rate Modelling">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./05_taxonomy.html" class="pagination-link" aria-label="Taxonomy Assignment">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

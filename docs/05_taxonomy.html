@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>5&nbsp; Taxonomy Assignment – 16S Metabarcoding with DADA2</title>
+<title>6&nbsp; Taxonomy Assignment – 16S Metabarcoding with DADA2</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -278,7 +278,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05_taxonomy.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05_taxonomy.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -331,38 +331,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./00_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">How to Run This Tutorial</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./01_setup_quality.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02_filter_trim.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03_error_models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04_denoise_merge.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./05_taxonomy.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./06_phyloseq_export.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span></a>
   </div>
 </li>
     </ul>
@@ -373,17 +379,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">5.1</span> Overview</a></li>
-  <li><a href="#the-silva-reference-database" id="toc-the-silva-reference-database" class="nav-link" data-scroll-target="#the-silva-reference-database"><span class="header-section-number">5.2</span> The SILVA reference database</a></li>
-  <li><a href="#run-taxonomy-assignment" id="toc-run-taxonomy-assignment" class="nav-link" data-scroll-target="#run-taxonomy-assignment"><span class="header-section-number">5.3</span> Run taxonomy assignment</a></li>
-  <li><a href="#inspect-the-taxonomy-table" id="toc-inspect-the-taxonomy-table" class="nav-link" data-scroll-target="#inspect-the-taxonomy-table"><span class="header-section-number">5.4</span> Inspect the taxonomy table</a></li>
-  <li><a href="#classification-summary" id="toc-classification-summary" class="nav-link" data-scroll-target="#classification-summary"><span class="header-section-number">5.5</span> Classification summary</a></li>
+<li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">6.1</span> Overview</a></li>
+  <li><a href="#the-silva-reference-database" id="toc-the-silva-reference-database" class="nav-link" data-scroll-target="#the-silva-reference-database"><span class="header-section-number">6.2</span> The SILVA reference database</a></li>
+  <li><a href="#run-taxonomy-assignment" id="toc-run-taxonomy-assignment" class="nav-link" data-scroll-target="#run-taxonomy-assignment"><span class="header-section-number">6.3</span> Run taxonomy assignment</a></li>
+  <li><a href="#inspect-the-taxonomy-table" id="toc-inspect-the-taxonomy-table" class="nav-link" data-scroll-target="#inspect-the-taxonomy-table"><span class="header-section-number">6.4</span> Inspect the taxonomy table</a></li>
+  <li><a href="#classification-summary" id="toc-classification-summary" class="nav-link" data-scroll-target="#classification-summary"><span class="header-section-number">6.5</span> Classification summary</a></li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/05_taxonomy.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">
-<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span>
+<span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span>
 </h1>
 </div>
 
@@ -398,12 +404,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="overview" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="overview">
-<span class="header-section-number">5.1</span> Overview</h2>
+</header><section id="overview" class="level2" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="overview">
+<span class="header-section-number">6.1</span> Overview</h2>
 <p>Once we have a table of denoised, chimera-free ASV sequences, we can assign each one a taxonomic identity by comparing it to a reference database. DADA2 uses a <strong>k-mer–based naive Bayesian classifier</strong> (Wang et al.&nbsp;2007) implemented in <code>assignTaxonomy()</code>.</p>
 <p>The function assigns taxonomy from Kingdom down to Genus, returning a confidence <strong>bootstrap value</strong> for each level. Assignments with low bootstrap support (&lt; 50 % by default) are reported as <code>NA</code> rather than an unreliable label.</p>
-</section><section id="the-silva-reference-database" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="the-silva-reference-database">
-<span class="header-section-number">5.2</span> The SILVA reference database</h2>
+</section><section id="the-silva-reference-database" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="the-silva-reference-database">
+<span class="header-section-number">6.2</span> The SILVA reference database</h2>
 <p>We use the <strong>SILVA</strong> database (v138), one of the most comprehensive curated 16S/18S rRNA gene databases. We use the formatted training set provided by the DADA2 team:</p>
 <table class="caption-top table">
 <thead><tr class="header">
@@ -428,8 +434,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Species-level assignment requires a second, separate reference file (<code>silva_v138_species_assignment.fa.gz</code>). It uses exact matching of the full ASV sequence rather than the Bayesian classifier, and should only be trusted when the amplicon region is discriminating at the species level. We skip <code>addSpecies()</code> in this tutorial because the file is not included in the dataset, but it can be added as a straightforward extra step if needed.</p>
 </div>
 </div>
-</section><section id="run-taxonomy-assignment" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="run-taxonomy-assignment">
-<span class="header-section-number">5.3</span> Run taxonomy assignment</h2>
+</section><section id="run-taxonomy-assignment" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="run-taxonomy-assignment">
+<span class="header-section-number">6.3</span> Run taxonomy assignment</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">taxa_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">path_precomp</span>, <span class="st">"taxa.rds"</span><span class="op">)</span></span>
 <span></span>
@@ -448,8 +454,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>Finished processing reference fasta.</code></pre>
 </div>
 </div>
-</section><section id="inspect-the-taxonomy-table" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="inspect-the-taxonomy-table">
-<span class="header-section-number">5.4</span> Inspect the taxonomy table</h2>
+</section><section id="inspect-the-taxonomy-table" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="inspect-the-taxonomy-table">
+<span class="header-section-number">6.4</span> Inspect the taxonomy table</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Remove sequence row names for readability</span></span>
 <span><span class="va">taxa.print</span> <span class="op">&lt;-</span> <span class="va">taxa</span></span>
@@ -481,8 +487,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The <code>taxa</code> object is a matrix with one row per ASV and one column per taxonomic level. <code>NA</code> values indicate the classifier was not sufficiently confident at that level.</p>
-</section><section id="classification-summary" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="classification-summary">
-<span class="header-section-number">5.5</span> Classification summary</h2>
+</section><section id="classification-summary" class="level2" data-number="6.5"><h2 data-number="6.5" class="anchored" data-anchor-id="classification-summary">
+<span class="header-section-number">6.5</span> Classification summary</h2>
 <p>How many ASVs received a classification at each level?</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">taxa_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">taxa</span><span class="op">)</span></span>
@@ -957,12 +963,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./04_denoise_merge.html" class="pagination-link" aria-label="Denoising, Merging and Chimera Removal">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./06_phyloseq_export.html" class="pagination-link" aria-label="Phyloseq Integration and Export">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

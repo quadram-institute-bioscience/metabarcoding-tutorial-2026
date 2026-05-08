@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>3&nbsp; Error Rate Modelling – 16S Metabarcoding with DADA2</title>
+<title>4&nbsp; Error Rate Modelling – 16S Metabarcoding with DADA2</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -278,7 +278,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_error_models.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_error_models.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -331,38 +331,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./00_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">How to Run This Tutorial</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./01_setup_quality.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02_filter_trim.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03_error_models.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04_denoise_merge.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./05_taxonomy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./06_phyloseq_export.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span></a>
   </div>
 </li>
     </ul>
@@ -373,17 +379,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#what-are-error-rates" id="toc-what-are-error-rates" class="nav-link active" data-scroll-target="#what-are-error-rates"><span class="header-section-number">3.1</span> What are error rates?</a></li>
-  <li><a href="#the-problem-with-binned-quality-scores" id="toc-the-problem-with-binned-quality-scores" class="nav-link" data-scroll-target="#the-problem-with-binned-quality-scores"><span class="header-section-number">3.2</span> The problem with binned quality scores</a></li>
-  <li><a href="#the-four-error-model-variants" id="toc-the-four-error-model-variants" class="nav-link" data-scroll-target="#the-four-error-model-variants"><span class="header-section-number">3.3</span> The four error model variants</a></li>
-  <li><a href="#define-the-error-model-functions" id="toc-define-the-error-model-functions" class="nav-link" data-scroll-target="#define-the-error-model-functions"><span class="header-section-number">3.4</span> Define the error model functions</a></li>
-  <li><a href="#learn-error-rates-from-the-data" id="toc-learn-error-rates-from-the-data" class="nav-link" data-scroll-target="#learn-error-rates-from-the-data"><span class="header-section-number">3.5</span> Learn error rates from the data</a></li>
-  <li><a href="#visualise-the-error-model" id="toc-visualise-the-error-model" class="nav-link" data-scroll-target="#visualise-the-error-model"><span class="header-section-number">3.6</span> Visualise the error model</a></li>
+<li><a href="#what-are-error-rates" id="toc-what-are-error-rates" class="nav-link active" data-scroll-target="#what-are-error-rates"><span class="header-section-number">4.1</span> What are error rates?</a></li>
+  <li><a href="#the-problem-with-binned-quality-scores" id="toc-the-problem-with-binned-quality-scores" class="nav-link" data-scroll-target="#the-problem-with-binned-quality-scores"><span class="header-section-number">4.2</span> The problem with binned quality scores</a></li>
+  <li><a href="#the-four-error-model-variants" id="toc-the-four-error-model-variants" class="nav-link" data-scroll-target="#the-four-error-model-variants"><span class="header-section-number">4.3</span> The four error model variants</a></li>
+  <li><a href="#define-the-error-model-functions" id="toc-define-the-error-model-functions" class="nav-link" data-scroll-target="#define-the-error-model-functions"><span class="header-section-number">4.4</span> Define the error model functions</a></li>
+  <li><a href="#learn-error-rates-from-the-data" id="toc-learn-error-rates-from-the-data" class="nav-link" data-scroll-target="#learn-error-rates-from-the-data"><span class="header-section-number">4.5</span> Learn error rates from the data</a></li>
+  <li><a href="#visualise-the-error-model" id="toc-visualise-the-error-model" class="nav-link" data-scroll-target="#visualise-the-error-model"><span class="header-section-number">4.6</span> Visualise the error model</a></li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/03_error_models.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title"><span id="sec-error-models" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></h1>
+<h1 class="title"><span id="sec-error-models" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></h1>
 </div>
 
 
@@ -397,12 +403,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="what-are-error-rates" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="what-are-error-rates">
-<span class="header-section-number">3.1</span> What are error rates?</h2>
+</header><section id="what-are-error-rates" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="what-are-error-rates">
+<span class="header-section-number">4.1</span> What are error rates?</h2>
 <p>Every sequencing instrument makes mistakes. A base may be called as A when it was actually C. The probability of each such substitution depends on the quality score reported for that position: a base called at Q30 has a 1-in-1000 chance of being wrong, while a Q20 base has a 1-in-100 chance.</p>
 <p>DADA2’s denoising algorithm uses a <strong>parametric error model</strong> — learned from the data itself — to estimate the true frequency of each type of error at each quality score. This model is then used to distinguish genuine biological variants from PCR/sequencing errors.</p>
-</section><section id="the-problem-with-binned-quality-scores" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="the-problem-with-binned-quality-scores">
-<span class="header-section-number">3.2</span> The problem with binned quality scores</h2>
+</section><section id="the-problem-with-binned-quality-scores" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="the-problem-with-binned-quality-scores">
+<span class="header-section-number">4.2</span> The problem with binned quality scores</h2>
 <p>The standard DADA2 error estimation assumes that error rates vary continuously and monotonically with the reported quality score: higher quality → lower error rate. This assumption holds well for <strong>MiSeq</strong> data.</p>
 <p><strong>NextSeq 2000 and NovaSeq</strong> use a 2-colour chemistry that reports quality scores in a small number of discrete levels (typically Q2, Q12, Q23, Q37). This <strong>binning</strong> creates a mismatch: many bases with very different true error rates share the same quality label, and some quality levels may have zero or very few observations. The default <code>loessErrfun</code> fails to fit a smooth, monotone curve through such sparse, clustered data.</p>
 <p>The solution is to use a modified loess fitting function that:</p>
@@ -412,8 +418,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Enforces monotonicity explicitly after fitting</li>
 </ol>
 <p>We provide four variants (Options 1–4). <strong>Option 4</strong> is recommended for NextSeq 2000 and NovaSeq data and is the one used in this tutorial.</p>
-</section><section id="the-four-error-model-variants" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="the-four-error-model-variants">
-<span class="header-section-number">3.3</span> The four error model variants</h2>
+</section><section id="the-four-error-model-variants" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="the-four-error-model-variants">
+<span class="header-section-number">4.3</span> The four error model variants</h2>
 <p>All four variants share the same overall structure. The differences are in how <code><a href="https://rdrr.io/r/stats/loess.html">loess()</a></code> is called:</p>
 <table class="caption-top table">
 <thead><tr class="header">
@@ -455,8 +461,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>Option 4 uses <code>degree = 1</code> (locally linear rather than locally quadratic) and a wide <code>span = 0.95</code>, which prevents over-fitting to the sparse quality bins and produces smooth, monotone error curves.</p>
-</section><section id="define-the-error-model-functions" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="define-the-error-model-functions">
-<span class="header-section-number">3.4</span> Define the error model functions</h2>
+</section><section id="define-the-error-model-functions" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="define-the-error-model-functions">
+<span class="header-section-number">4.4</span> Define the error model functions</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Option 4: recommended for NextSeq 2000 / NovaSeq binned quality scores</span></span>
 <span><span class="va">loessErrfun_mod4</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">trans</span><span class="op">)</span> <span class="op">{</span></span>
@@ -637,8 +643,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section><section id="learn-error-rates-from-the-data" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="learn-error-rates-from-the-data">
-<span class="header-section-number">3.5</span> Learn error rates from the data</h2>
+</section><section id="learn-error-rates-from-the-data" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="learn-error-rates-from-the-data">
+<span class="header-section-number">4.5</span> Learn error rates from the data</h2>
 <p><code>learnErrors()</code> processes a subset of reads (here, up to 10^10 bases, effectively all of them) to estimate per-cycle, per-substitution error rates. This is the most computationally demanding step of the pipeline.</p>
 <p>The results are cached to disk so that re-rendering the document does not require re-running this step.</p>
 <div class="cell">
@@ -688,8 +694,8 @@ selfConsist step 1 .............................
 Convergence after  7  rounds.</code></pre>
 </div>
 </div>
-</section><section id="visualise-the-error-model" class="level2" data-number="3.6"><h2 data-number="3.6" class="anchored" data-anchor-id="visualise-the-error-model">
-<span class="header-section-number">3.6</span> Visualise the error model</h2>
+</section><section id="visualise-the-error-model" class="level2" data-number="4.6"><h2 data-number="4.6" class="anchored" data-anchor-id="visualise-the-error-model">
+<span class="header-section-number">4.6</span> Visualise the error model</h2>
 <p>A good error model should show:</p>
 <ul>
 <li>
@@ -1145,12 +1151,12 @@ Convergence after  7  rounds.</code></pre>
   });
   </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./02_filter_trim.html" class="pagination-link" aria-label="Filtering and Trimming">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./04_denoise_merge.html" class="pagination-link" aria-label="Denoising, Merging and Chimera Removal">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

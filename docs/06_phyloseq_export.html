@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>6&nbsp; Phyloseq Integration and Export – 16S Metabarcoding with DADA2</title>
+<title>7&nbsp; Phyloseq Integration and Export – 16S Metabarcoding with DADA2</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -277,7 +277,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_phyloseq_export.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_phyloseq_export.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -330,38 +330,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./00_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">How to Run This Tutorial</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./01_setup_quality.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02_filter_trim.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03_error_models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04_denoise_merge.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./05_taxonomy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./06_phyloseq_export.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span></a>
   </div>
 </li>
     </ul>
@@ -372,25 +378,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#what-is-phyloseq" id="toc-what-is-phyloseq" class="nav-link active" data-scroll-target="#what-is-phyloseq"><span class="header-section-number">6.1</span> What is phyloseq?</a></li>
-  <li><a href="#prepare-metadata" id="toc-prepare-metadata" class="nav-link" data-scroll-target="#prepare-metadata"><span class="header-section-number">6.2</span> Prepare metadata</a></li>
-  <li><a href="#build-the-phyloseq-object" id="toc-build-the-phyloseq-object" class="nav-link" data-scroll-target="#build-the-phyloseq-object"><span class="header-section-number">6.3</span> Build the phyloseq object</a></li>
+<li><a href="#what-is-phyloseq" id="toc-what-is-phyloseq" class="nav-link active" data-scroll-target="#what-is-phyloseq"><span class="header-section-number">7.1</span> What is phyloseq?</a></li>
+  <li><a href="#prepare-metadata" id="toc-prepare-metadata" class="nav-link" data-scroll-target="#prepare-metadata"><span class="header-section-number">7.2</span> Prepare metadata</a></li>
+  <li><a href="#build-the-phyloseq-object" id="toc-build-the-phyloseq-object" class="nav-link" data-scroll-target="#build-the-phyloseq-object"><span class="header-section-number">7.3</span> Build the phyloseq object</a></li>
   <li>
-<a href="#filter-unwanted-taxa" id="toc-filter-unwanted-taxa" class="nav-link" data-scroll-target="#filter-unwanted-taxa"><span class="header-section-number">6.4</span> Filter unwanted taxa</a>
+<a href="#filter-unwanted-taxa" id="toc-filter-unwanted-taxa" class="nav-link" data-scroll-target="#filter-unwanted-taxa"><span class="header-section-number">7.4</span> Filter unwanted taxa</a>
   <ul class="collapse">
-<li><a href="#remove-asvs-unclassified-at-family-level" id="toc-remove-asvs-unclassified-at-family-level" class="nav-link" data-scroll-target="#remove-asvs-unclassified-at-family-level"><span class="header-section-number">6.4.1</span> Remove ASVs unclassified at Family level</a></li>
+<li><a href="#remove-asvs-unclassified-at-family-level" id="toc-remove-asvs-unclassified-at-family-level" class="nav-link" data-scroll-target="#remove-asvs-unclassified-at-family-level"><span class="header-section-number">7.4.1</span> Remove ASVs unclassified at Family level</a></li>
   </ul>
 </li>
-  <li><a href="#taxonomic-composition-overview" id="toc-taxonomic-composition-overview" class="nav-link" data-scroll-target="#taxonomic-composition-overview"><span class="header-section-number">6.5</span> Taxonomic composition overview</a></li>
-  <li><a href="#filtering-summary" id="toc-filtering-summary" class="nav-link" data-scroll-target="#filtering-summary"><span class="header-section-number">6.6</span> Filtering summary</a></li>
-  <li><a href="#export-outputs" id="toc-export-outputs" class="nav-link" data-scroll-target="#export-outputs"><span class="header-section-number">6.7</span> Export outputs</a></li>
-  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next"><span class="header-section-number">6.8</span> What’s next?</a></li>
+  <li><a href="#taxonomic-composition-overview" id="toc-taxonomic-composition-overview" class="nav-link" data-scroll-target="#taxonomic-composition-overview"><span class="header-section-number">7.5</span> Taxonomic composition overview</a></li>
+  <li><a href="#filtering-summary" id="toc-filtering-summary" class="nav-link" data-scroll-target="#filtering-summary"><span class="header-section-number">7.6</span> Filtering summary</a></li>
+  <li><a href="#export-outputs" id="toc-export-outputs" class="nav-link" data-scroll-target="#export-outputs"><span class="header-section-number">7.7</span> Export outputs</a></li>
+  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next"><span class="header-section-number">7.8</span> What’s next?</a></li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/06_phyloseq_export.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">
-<span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span>
+<span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span>
 </h1>
 </div>
 
@@ -405,8 +411,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="what-is-phyloseq" class="level2" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="what-is-phyloseq">
-<span class="header-section-number">6.1</span> What is phyloseq?</h2>
+</header><section id="what-is-phyloseq" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="what-is-phyloseq">
+<span class="header-section-number">7.1</span> What is phyloseq?</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="images/phyloseq-image.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <figcaption>Phyloseq</figcaption></figure>
@@ -447,8 +453,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>Keeping everything in one object prevents accidental misalignment between tables and gives access to a rich set of analysis and visualisation functions.</p>
-</section><section id="prepare-metadata" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="prepare-metadata">
-<span class="header-section-number">6.2</span> Prepare metadata</h2>
+</section><section id="prepare-metadata" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="prepare-metadata">
+<span class="header-section-number">7.2</span> Prepare metadata</h2>
 <p>We derive metadata directly from the sample names, which encode the experimental design (<code>Group_Timepoint_Replicate</code>).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Parse sample names into experimental variables</span></span>
@@ -488,8 +494,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section><section id="build-the-phyloseq-object" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="build-the-phyloseq-object">
-<span class="header-section-number">6.3</span> Build the phyloseq object</h2>
+</section><section id="build-the-phyloseq-object" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="build-the-phyloseq-object">
+<span class="header-section-number">7.3</span> Build the phyloseq object</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Ensure tables are in the same order</span></span>
 <span><span class="va">metadata_matched</span>  <span class="op">&lt;-</span> <span class="va">metadata</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">seqtab.nochim</span><span class="op">)</span>, <span class="op">]</span></span>
@@ -520,8 +526,8 @@ tax_table()   Taxonomy Table:    [ 1091 taxa by 6 taxonomic ranks ]
 refseq()      DNAStringSet:      [ 1091 reference sequences ]</code></pre>
 </div>
 </div>
-</section><section id="filter-unwanted-taxa" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="filter-unwanted-taxa">
-<span class="header-section-number">6.4</span> Filter unwanted taxa</h2>
+</section><section id="filter-unwanted-taxa" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="filter-unwanted-taxa">
+<span class="header-section-number">7.4</span> Filter unwanted taxa</h2>
 <p>16S amplification can co-amplify <strong>mitochondrial</strong> and <strong>chloroplast</strong> 16S-like sequences from plant and eukaryotic cells. These are not bacteria and must be removed before downstream analyses.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ps_filtered</span> <span class="op">&lt;-</span> <span class="va">ps</span> <span class="op">%&gt;%</span></span>
@@ -540,8 +546,8 @@ refseq()      DNAStringSet:      [ 1091 reference sequences ]</code></pre>
 <pre><code>ASVs removed (mitochondria / chloroplasts): 26 </code></pre>
 </div>
 </div>
-<section id="remove-asvs-unclassified-at-family-level" class="level3" data-number="6.4.1"><h3 data-number="6.4.1" class="anchored" data-anchor-id="remove-asvs-unclassified-at-family-level">
-<span class="header-section-number">6.4.1</span> Remove ASVs unclassified at Family level</h3>
+<section id="remove-asvs-unclassified-at-family-level" class="level3" data-number="7.4.1"><h3 data-number="7.4.1" class="anchored" data-anchor-id="remove-asvs-unclassified-at-family-level">
+<span class="header-section-number">7.4.1</span> Remove ASVs unclassified at Family level</h3>
 <p>For most downstream community analyses we require at least Family-level classification. ASVs that could not be classified even at this level are removed.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ps_final</span> <span class="op">&lt;-</span> <span class="va">ps_filtered</span> <span class="op">%&gt;%</span></span>
@@ -561,8 +567,8 @@ refseq()      DNAStringSet:      [ 1091 reference sequences ]</code></pre>
 <pre><code>Total reads in final dataset: 4674036 </code></pre>
 </div>
 </div>
-</section></section><section id="taxonomic-composition-overview" class="level2" data-number="6.5"><h2 data-number="6.5" class="anchored" data-anchor-id="taxonomic-composition-overview">
-<span class="header-section-number">6.5</span> Taxonomic composition overview</h2>
+</section></section><section id="taxonomic-composition-overview" class="level2" data-number="7.5"><h2 data-number="7.5" class="anchored" data-anchor-id="taxonomic-composition-overview">
+<span class="header-section-number">7.5</span> Taxonomic composition overview</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tax_df</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu">tax_table</span><span class="op">(</span><span class="va">ps_final</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">levels</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Kingdom"</span>, <span class="st">"Phylum"</span>, <span class="st">"Class"</span>, <span class="st">"Order"</span>, <span class="st">"Family"</span>, <span class="st">"Genus"</span><span class="op">)</span></span>
@@ -592,8 +598,8 @@ refseq()      DNAStringSet:      [ 1091 reference sequences ]</code></pre>
 </div>
 </div>
 </div>
-</section><section id="filtering-summary" class="level2" data-number="6.6"><h2 data-number="6.6" class="anchored" data-anchor-id="filtering-summary">
-<span class="header-section-number">6.6</span> Filtering summary</h2>
+</section><section id="filtering-summary" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="filtering-summary">
+<span class="header-section-number">7.6</span> Filtering summary</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"\n=== FILTERING SUMMARY ===\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -621,8 +627,8 @@ refseq()      DNAStringSet:      [ 1091 reference sequences ]</code></pre>
 <pre><code>Total reads in final dataset:              4674036 </code></pre>
 </div>
 </div>
-</section><section id="export-outputs" class="level2" data-number="6.7"><h2 data-number="6.7" class="anchored" data-anchor-id="export-outputs">
-<span class="header-section-number">6.7</span> Export outputs</h2>
+</section><section id="export-outputs" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="export-outputs">
+<span class="header-section-number">7.7</span> Export outputs</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Phyloseq object (for downstream analysis in R)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">ps_final</span>, <span class="st">"phyloseq_object.rds"</span><span class="op">)</span></span>
@@ -668,8 +674,8 @@ refseq()      DNAStringSet:      [ 1091 reference sequences ]</code></pre>
 <pre><code>  samples_with_abundances.csv</code></pre>
 </div>
 </div>
-</section><section id="whats-next" class="level2" data-number="6.8"><h2 data-number="6.8" class="anchored" data-anchor-id="whats-next">
-<span class="header-section-number">6.8</span> What’s next?</h2>
+</section><section id="whats-next" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="whats-next">
+<span class="header-section-number">7.8</span> What’s next?</h2>
 <p>The <code>phyloseq_object.rds</code> file is the starting point for all downstream analyses:</p>
 <ul>
 <li>
@@ -1100,7 +1106,7 @@ refseq()      DNAStringSet:      [ 1091 reference sequences ]</code></pre>
   });
   </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./05_taxonomy.html" class="pagination-link" aria-label="Taxonomy Assignment">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

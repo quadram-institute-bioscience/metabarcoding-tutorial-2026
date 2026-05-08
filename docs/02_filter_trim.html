@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>2&nbsp; Filtering and Trimming – 16S Metabarcoding with DADA2</title>
+<title>3&nbsp; Filtering and Trimming – 16S Metabarcoding with DADA2</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -303,7 +303,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02_filter_trim.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02_filter_trim.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -356,38 +356,44 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./00_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">How to Run This Tutorial</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./01_setup_quality.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02_filter_trim.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03_error_models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04_denoise_merge.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Denoising, Merging and Chimera Removal</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./05_taxonomy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy Assignment</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./06_phyloseq_export.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Phyloseq Integration and Export</span></span></a>
   </div>
 </li>
     </ul>
@@ -398,18 +404,18 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#why-filter-reads" id="toc-why-filter-reads" class="nav-link active" data-scroll-target="#why-filter-reads"><span class="header-section-number">2.1</span> Why filter reads?</a></li>
-  <li><a href="#define-filtered-file-paths" id="toc-define-filtered-file-paths" class="nav-link" data-scroll-target="#define-filtered-file-paths"><span class="header-section-number">2.2</span> Define filtered file paths</a></li>
-  <li><a href="#run-filterandtrim" id="toc-run-filterandtrim" class="nav-link" data-scroll-target="#run-filterandtrim"><span class="header-section-number">2.3</span> Run filterAndTrim</a></li>
-  <li><a href="#parameter-guide" id="toc-parameter-guide" class="nav-link" data-scroll-target="#parameter-guide"><span class="header-section-number">2.4</span> Parameter guide</a></li>
-  <li><a href="#inspect-filtering-statistics" id="toc-inspect-filtering-statistics" class="nav-link" data-scroll-target="#inspect-filtering-statistics"><span class="header-section-number">2.5</span> Inspect filtering statistics</a></li>
-  <li><a href="#check-filtered-files-exist" id="toc-check-filtered-files-exist" class="nav-link" data-scroll-target="#check-filtered-files-exist"><span class="header-section-number">2.6</span> Check filtered files exist</a></li>
+<li><a href="#why-filter-reads" id="toc-why-filter-reads" class="nav-link active" data-scroll-target="#why-filter-reads"><span class="header-section-number">3.1</span> Why filter reads?</a></li>
+  <li><a href="#define-filtered-file-paths" id="toc-define-filtered-file-paths" class="nav-link" data-scroll-target="#define-filtered-file-paths"><span class="header-section-number">3.2</span> Define filtered file paths</a></li>
+  <li><a href="#run-filterandtrim" id="toc-run-filterandtrim" class="nav-link" data-scroll-target="#run-filterandtrim"><span class="header-section-number">3.3</span> Run filterAndTrim</a></li>
+  <li><a href="#parameter-guide" id="toc-parameter-guide" class="nav-link" data-scroll-target="#parameter-guide"><span class="header-section-number">3.4</span> Parameter guide</a></li>
+  <li><a href="#inspect-filtering-statistics" id="toc-inspect-filtering-statistics" class="nav-link" data-scroll-target="#inspect-filtering-statistics"><span class="header-section-number">3.5</span> Inspect filtering statistics</a></li>
+  <li><a href="#check-filtered-files-exist" id="toc-check-filtered-files-exist" class="nav-link" data-scroll-target="#check-filtered-files-exist"><span class="header-section-number">3.6</span> Check filtered files exist</a></li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/edit/main/02_filter_trim.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quadram-institute-bioscience/metabarcoding-tutorial-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">
-<span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span>
+<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Filtering and Trimming</span>
 </h1>
 </div>
 
@@ -424,8 +430,8 @@ window.Quarto = {
   
 
 
-</header><section id="why-filter-reads" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="why-filter-reads">
-<span class="header-section-number">2.1</span> Why filter reads?</h2>
+</header><section id="why-filter-reads" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="why-filter-reads">
+<span class="header-section-number">3.1</span> Why filter reads?</h2>
 <p>Raw sequencing reads contain:</p>
 <ul>
 <li>
@@ -438,8 +444,8 @@ window.Quarto = {
 </li>
 </ul>
 <p>The <code>filterAndTrim()</code> function removes all of these in a single step and also truncates reads to a fixed length, which is required for consistent error modelling.</p>
-</section><section id="define-filtered-file-paths" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="define-filtered-file-paths">
-<span class="header-section-number">2.2</span> Define filtered file paths</h2>
+</section><section id="define-filtered-file-paths" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="define-filtered-file-paths">
+<span class="header-section-number">3.2</span> Define filtered file paths</h2>
 <p>Here is where we will <em>save</em> the filtered reads.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">filtFs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">path_filtered</span>,</span>
@@ -451,8 +457,8 @@ window.Quarto = {
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">filtFs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sample.names</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">filtRs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sample.names</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section><section id="run-filterandtrim" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="run-filterandtrim">
-<span class="header-section-number">2.3</span> Run filterAndTrim</h2>
+</section><section id="run-filterandtrim" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="run-filterandtrim">
+<span class="header-section-number">3.3</span> Run filterAndTrim</h2>
 <p>The <em>filterAndTrim</em> function allows to filter our reads that should be already free of sequencing primers!</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">filterAndTrim</span><span class="op">(</span></span>
@@ -468,8 +474,8 @@ window.Quarto = {
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">out</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">path_precomp</span>, <span class="st">"out.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section><section id="parameter-guide" class="level2" data-number="2.4"><h2 data-number="2.4" class="anchored" data-anchor-id="parameter-guide">
-<span class="header-section-number">2.4</span> Parameter guide</h2>
+</section><section id="parameter-guide" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="parameter-guide">
+<span class="header-section-number">3.4</span> Parameter guide</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 37%">
@@ -524,8 +530,8 @@ window.Quarto = {
 <p>A read with <code>maxEE = 2</code> can have no more than 2 expected sequencing errors in total. This is more lenient than requiring every base to exceed Q30, while still keeping read quality high.</p>
 </div>
 </div>
-</section><section id="inspect-filtering-statistics" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="inspect-filtering-statistics">
-<span class="header-section-number">2.5</span> Inspect filtering statistics</h2>
+</section><section id="inspect-filtering-statistics" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="inspect-filtering-statistics">
+<span class="header-section-number">3.5</span> Inspect filtering statistics</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Convert to data frame and add sample names</span></span>
 <span><span class="va">filter_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
@@ -552,8 +558,8 @@ window.Quarto = {
 </div>
 </div>
 <p>A retention rate above <strong>70–80 %</strong> is generally acceptable. If many samples lose more than 30 % of reads at this step, consider relaxing <code>maxEE</code> slightly (e.g.&nbsp;to 5) or revisiting the primer-trimming step upstream.</p>
-</section><section id="check-filtered-files-exist" class="level2" data-number="2.6"><h2 data-number="2.6" class="anchored" data-anchor-id="check-filtered-files-exist">
-<span class="header-section-number">2.6</span> Check filtered files exist</h2>
+</section><section id="check-filtered-files-exist" class="level2" data-number="3.6"><h2 data-number="3.6" class="anchored" data-anchor-id="check-filtered-files-exist">
+<span class="header-section-number">3.6</span> Check filtered files exist</h2>
 <p>A small sanity check: some samples may have lost all reads (e.g.&nbsp;negative controls with very low input). DADA2 will error if it tries to open an empty or absent file.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Keep only samples for which filtered files were actually created</span></span>
@@ -990,12 +996,12 @@ window.Quarto = {
   });
   </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./01_setup_quality.html" class="pagination-link" aria-label="Setup and Quality Assessment">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup and Quality Assessment</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./03_error_models.html" class="pagination-link" aria-label="Error Rate Modelling">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Error Rate Modelling</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
