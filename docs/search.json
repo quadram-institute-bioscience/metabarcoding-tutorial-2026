@@ -80,6 +80,16 @@
     ]
   },
   {
+    "objectID": "index.html#r-markdown-version",
+    "href": "index.html#r-markdown-version",
+    "title": "16S Metabarcoding with DADA2",
+    "section": "R Markdown version",
+    "text": "R Markdown version\nThis website is built with Quarto and analyses a full dataset. An R markdown version that focus on a subset of the raw data is available here.",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
     "objectID": "00_setup.html",
     "href": "00_setup.html",
     "title": "\n1  How to Run This Tutorial\n",
@@ -94,7 +104,7 @@
     "href": "00_setup.html#tldr-minimal-downloads",
     "title": "\n1  How to Run This Tutorial\n",
     "section": "",
-    "text": "A subset of the reads from zenodo.org/records/20082786\n\nSilva138.2 Database for DADA2 from zenodo.org/records/14169026\n\nA script to install the required packages from GitHub",
+    "text": "A subset of the reads from zenodo.org/records/20082786\nSilva138.2 Database for DADA2 from zenodo.org/records/14169026\nA script to install the required packages from GitHub\nThere is an R Markdown version that was tested on the NBI HPC (source)",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>How to Run This Tutorial</span>"
     ]

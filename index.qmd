@@ -148,3 +148,8 @@ The analysis was developed and tested with:
 - dada2 ≥ 1.28
 - phyloseq ≥ 1.44
 - tidyverse ≥ 2.0
+
+## R Markdown version
+
+This website is built with Quarto and analyses a full dataset.
+An [R markdown](r/index.html) version that focus on a subset of the raw data is available here.

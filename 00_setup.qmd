@@ -9,6 +9,8 @@ a working R environment with the required packages. This preliminary page covers
 * Silva138.2 Database for DADA2 from [zenodo.org/records/14169026](https://zenodo.org/records/14169026/files/silva_nr99_v138.2_toGenus_trainset.fa.gz?download=1)
 * A script to install the required packages from [GitHub](https://gist.githubusercontent.com/telatin/61fc1dff358a38596add16bcbda247f5/raw/5d8a37307e1cff0b49d8871a0c5515bc5854c9cc/metabar_setup.R)
 
+* There is an [R Markdown](r/index) version that was tested on the NBI HPC ([source](r/dada2_analysis_small.Rmd))
+
 ## The dataset: Getting the raw reads
 
 The dataset used throughout this tutorial is publicly available in the
