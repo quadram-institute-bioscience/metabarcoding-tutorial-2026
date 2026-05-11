@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comparison of USEARCH and DADA2</title>
+  <style>
+    /* ── Reset & base ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sidebar-w: 240px;
+      --accent:    #2c7bb6;
+      --accent-lt: #e8f2fa;
+      --text:      #222;
+      --muted:     #555;
+      --border:    #d6dde6;
+      --bg:        #f8f9fa;
+      --white:     #ffffff;
+      --code-bg:   #f3f4f6;
+      --radius:    6px;
+      --shadow:    0 1px 4px rgba(0,0,0,.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Georgia", "Times New Roman", serif;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ────────────────────────────────────────────────── */
+    #sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 2rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    #sidebar .site-title {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--accent);
+    }
+
+    #sidebar nav h3 {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    #sidebar nav ol {
+      list-style: none;
+      padding: 0;
+    }
+
+    #sidebar nav ol li {
+      margin: 0;
+    }
+
+    #sidebar nav ol li a {
+      display: block;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.28rem 0.5rem;
+      border-radius: var(--radius);
+      transition: background .15s, color .15s;
+    }
+
+    #sidebar nav ol li a:hover,
+    #sidebar nav ol li a.active {
+      background: var(--accent-lt);
+      color: var(--accent);
+    }
+
+    #sidebar nav ol li a.sub {
+      padding-left: 1.3rem;
+      font-size: 0.77rem;
+    }
+
+    /* ── Main content ───────────────────────────────────────────── */
+    main {
+      flex: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2.5rem 5rem;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    header.page-header {
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    header.page-header .breadcrumb {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: .03em;
+      margin-bottom: 0.5rem;
+    }
+
+    h1.page-title {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+      margin-bottom: 0.8rem;
+    }
+
+    .page-meta {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.82rem;
+      color: var(--muted);
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── Sections ────────────────────────────────────────────────── */
+    section {
+      margin-bottom: 3rem;
+      scroll-margin-top: 1.5rem;
+    }
+
+    h2 {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 2rem 0 0.8rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 1.4rem 0 0.5rem;
+    }
+
+    p {
+      margin-bottom: 0.9rem;
+    }
+
+    ul, ol {
+      margin: 0.5rem 0 0.9rem 1.5rem;
+    }
+
+    li { margin-bottom: 0.3rem; }
+
+    code {
+      font-family: "SF Mono", "Fira Mono", "Consolas", monospace;
+      font-size: 0.83em;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1em 0.4em;
+    }
+
+    /* ── Callout boxes ───────────────────────────────────────────── */
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-lt);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 0.9rem 1.2rem;
+      margin: 1.2rem 0;
+      font-size: 0.93rem;
+    }
+
+    .callout.note  { border-color: var(--accent);  background: var(--accent-lt); }
+    .callout.warn  { border-color: #e07b00; background: #fff7e6; }
+
+    .callout strong {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      display: block;
+      margin-bottom: 0.3rem;
+      color: var(--accent);
+    }
+
+    .callout.warn strong { color: #b35900; }
+
+    /* ── Methods table ───────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1rem 0 1.5rem;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+
+    th {
+      background: var(--accent);
+      color: var(--white);
+      font-weight: 600;
+      text-align: left;
+      padding: 0.55rem 0.8rem;
+    }
+
+    td {
+      padding: 0.48rem 0.8rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td { background: #f4f7fb; }
+
+    /* ── Figures ─────────────────────────────────────────────────── */
+    figure {
+      margin: 1.8rem 0;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-bottom: 1px solid var(--border);
+    }
+
+    figcaption {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.81rem;
+      color: var(--muted);
+      padding: 0.7rem 1rem;
+      line-height: 1.5;
+    }
+
+    figcaption strong {
+      color: var(--text);
+    }
+
+    /* ── Footer ──────────────────────────────────────────────────── */
+    footer {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.78rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 1.2rem;
+      margin-top: 3rem;
+    }
+
+    /* ── Responsive ──────────────────────────────────────────────── */
+    @media (max-width: 720px) {
+      body { flex-direction: column; }
+      #sidebar {
+        position: static;
+        height: auto;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 1rem;
+      }
+      main { padding: 1.5rem 1rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- SIDEBAR                                                        -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<aside id="sidebar">
+  <div class="site-title">Metabarcoding Analysis</div>
+
+  <nav aria-label="Table of contents">
+    <h3>On this page</h3>
+    <ol>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#methods">Methods</a></li>
+      <li><a href="#read-counts">1. Read Counts &amp; QC</a></li>
+      <li><a href="#alpha-div">2. Alpha Diversity</a></li>
+      <li><a href="#composition">3. Genus Composition</a></li>
+      <li><a href="#heatmap">4. Abundance Heatmap</a></li>
+      <li><a href="#scatter">5. Per-sample Correlation</a></li>
+      <li><a href="#side-by-side">6. Side-by-side Comparison</a></li>
+      <li><a href="#summary">Summary</a></li>
+    </ol>
+  </nav>
+</aside>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- MAIN                                                           -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<main>
+
+  <header class="page-header">
+    <p class="breadcrumb">Metabarcoding · Pipeline Benchmarking</p>
+    <h1 class="page-title">Comparison of USEARCH and DADA2</h1>
+    <div class="page-meta">
+      <span>Amplicon: 16S rRNA</span>
+      <span>Samples: 4 (2 groups × 2 replicates)</span>
+      <span>Timepoint: H48</span>
+    </div>
+  </header>
+
+  <!-- ── Overview ─────────────────────────────────────────────── -->
+  <section id="overview">
+    <h2>Overview</h2>
+
+    <p>
+      This page presents a side-by-side comparison of two widely used amplicon
+      sequence processing pipelines — <strong>DADA2</strong> and
+      <strong>USEARCH</strong> — applied to the same set of 16S rRNA samples.
+      The goal is to evaluate concordance in read-count recovery, alpha
+      diversity estimates, and genus-level taxonomic composition.
+    </p>
+
+    <p>
+      The four samples analysed represent a fermentation experiment with two
+      treatment groups each measured in biological duplicate at 48 h:
+    </p>
+
+    <ul>
+      <li><code>Lactobacillus_H48_R1</code> and <code>Lactobacillus_H48_R2</code> —
+          <em>Lactobacillus</em>-inoculated communities</li>
+      <li><code>Spontaneous_H48_R1</code> and <code>Spontaneous_H48_R2</code> —
+          spontaneous (uninoculated) fermentation communities</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Note</strong>
+      All analyses were performed with the script
+      <code>compare_pipelines.py</code>, which loads count tables and taxonomy
+      files from the <code>dada2/</code> and <code>usearch/</code> directories,
+      computes summary statistics, and generates the figures shown below.
+    </div>
+  </section>
+
+  <!-- ── Methods ──────────────────────────────────────────────── -->
+  <section id="methods">
+    <h2>Methods</h2>
+
+    <p>
+      Both pipelines were run independently on the same paired-end FASTQ files.
+      Key parameters and outputs are summarised below.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Step</th>
+          <th>DADA2</th>
+          <th>USEARCH</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Unit</td>
+          <td>ASV (exact sequences)</td>
+          <td>ZOTU (zero-radius OTU)</td>
+        </tr>
+        <tr>
+          <td>Error model</td>
+          <td>Parametric, sample-learned</td>
+          <td>Unoise3 statistical model</td>
+        </tr>
+        <tr>
+          <td>Chimera removal</td>
+          <td>removeBimeraDenovo</td>
+          <td>Built into unoise3</td>
+        </tr>
+        <tr>
+          <td>Taxonomy</td>
+          <td>SILVA (assignTaxonomy)</td>
+          <td>SILVA + dadaist2 (MA classifier)</td>
+        </tr>
+        <tr>
+          <td>Count table</td>
+          <td><code>samples_with_abundances.csv</code></td>
+          <td><code>merged.tsv</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Taxonomic composition was compared at genus level. Genera detected at
+      &gt;0.5 % mean relative abundance in at least one pipeline were
+      considered for heatmap and correlation analyses.
+    </p>
+  </section>
+
+  <!-- ── 1. Read counts ────────────────────────────────────────── -->
+  <section id="read-counts">
+    <h2>1. Read Counts &amp; QC Retention</h2>
+
+    <p>
+      Total reads assigned to ASVs/ZOTUs are compared across the two pipelines
+      for each sample. The right panel shows the proportion of reads retained at
+      each DADA2 processing stage relative to raw input.
+    </p>
+
+    <figure>
+      <img src="01_read_counts.png"
+           alt="Bar chart of total reads per sample for DADA2 and USEARCH, and a line chart of DADA2 read retention stages" />
+      <figcaption>
+        <strong>Figure 1.</strong> <em>Left:</em> Total reads assigned to
+        ASVs (DADA2) or ZOTUs (USEARCH) per sample. <em>Right:</em> DADA2
+        read retention (% of input reads) across quality-filtering, denoising,
+        merging, and chimera-removal stages.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ── 2. Alpha diversity ────────────────────────────────────── -->
+  <section id="alpha-div">
+    <h2>2. Alpha Diversity</h2>
+
+    <p>
+      Observed richness (number of detected ASVs or ZOTUs) and Shannon
+      diversity (bits) are compared for each sample and pipeline.
+    </p>
+
+    <figure>
+      <img src="02_alpha_diversity.png"
+           alt="Grouped bar charts of ASV/ZOTU richness and Shannon diversity for DADA2 and USEARCH" />
+      <figcaption>
+        <strong>Figure 2.</strong> Alpha diversity estimates per sample.
+        <em>Left:</em> Observed richness (number of unique ASVs or ZOTUs
+        with at least one read). <em>Right:</em> Shannon diversity index
+        (log base 2). Higher values indicate more evenness in the community.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ── 3. Genus composition ──────────────────────────────────── -->
+  <section id="composition">
+    <h2>3. Genus-level Composition</h2>
+
+    <p>
+      Reads are collapsed to genus level and expressed as relative abundance.
+      The top 12 genera (by mean abundance across samples) are shown; all
+      remaining taxa are pooled into <em>Other</em>.
+    </p>
+
+    <figure>
+      <img src="03_genus_composition.png"
+           alt="Stacked bar charts of genus-level relative abundance for DADA2 (left) and USEARCH (right)" />
+      <figcaption>
+        <strong>Figure 3.</strong> Genus-level relative abundance (%) in each
+        sample for DADA2 (<em>left</em>) and USEARCH (<em>right</em>).
+        Top 12 genera shown; remaining taxa grouped as <em>Other</em>.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ── 4. Heatmap ───────────────────────────────────────────── -->
+  <section id="heatmap">
+    <h2>4. Shared Genera — Abundance Heatmap</h2>
+
+    <p>
+      Genera detected by <em>both</em> pipelines at &gt;0.5 % mean relative
+      abundance are displayed as a heatmap, with DADA2 and USEARCH abundances
+      shown side-by-side on a common colour scale.
+    </p>
+
+    <figure>
+      <img src="04_genus_heatmap.png"
+           alt="Side-by-side heatmaps of shared genus relative abundances for DADA2 and USEARCH" />
+      <figcaption>
+        <strong>Figure 4.</strong> Relative abundance (%) of genera present in
+        both pipelines at &gt;0.5 % mean RA. Colour scale is shared between
+        panels; values are annotated in each cell.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ── 5. Scatter ───────────────────────────────────────────── -->
+  <section id="scatter">
+    <h2>5. Per-sample Genus Correlation</h2>
+
+    <p>
+      For each sample, genus relative abundances are plotted on log-log axes
+      to assess quantitative agreement between pipelines. The dashed line
+      represents perfect 1 : 1 concordance. Genera contributing &gt;1 % in
+      either pipeline are labelled.
+    </p>
+
+    <figure>
+      <img src="05_genus_scatter.png"
+           alt="2×2 grid of log-log scatter plots comparing DADA2 and USEARCH genus relative abundances per sample" />
+      <figcaption>
+        <strong>Figure 5.</strong> Log-scale genus relative abundance in DADA2
+        vs. USEARCH for each sample (shared genera only). Dashed line: 1 : 1.
+        Pearson <em>r</em> is computed on log<sub>10</sub>-transformed values.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ── 6. Side-by-side ───────────────────────────────────────── -->
+  <section id="side-by-side">
+    <h2>6. Side-by-side Comparison</h2>
+
+    <p>
+      A combined view of genus-level composition, facilitating direct visual
+      comparison of the community profiles recovered by each pipeline across
+      all four samples.
+    </p>
+
+    <figure>
+      <img src="06_genus_side_by_side.png"
+           alt="Side-by-side genus composition comparison across all four samples" />
+      <figcaption>
+        <strong>Figure 6.</strong> Genus-level community profiles displayed
+        side-by-side for DADA2 and USEARCH across all samples.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ── Summary ───────────────────────────────────────────────── -->
+  <section id="summary">
+    <h2>Summary</h2>
+
+    <p>
+      Both pipelines recover highly concordant community structure at genus
+      level. Key observations:
+    </p>
+
+    <ul>
+      <li><strong>Read recovery</strong> — DADA2 and USEARCH assign comparable
+          numbers of reads to sequence variants, though DADA2 applies
+          additional chimera filtering that can reduce total counts slightly.</li>
+      <li><strong>Richness</strong> — USEARCH ZOTUs typically yield higher
+          observed richness than DADA2 ASVs; some of this difference reflects
+          algorithm-specific splitting of closely related sequences.</li>
+      <li><strong>Taxonomic composition</strong> — Dominant genera are
+          consistently detected by both pipelines. Minor discrepancies arise
+          from differences in taxonomic assignment (classifier and database
+          settings) and from sequences that pass one pipeline's quality
+          thresholds but not the other's.</li>
+      <li><strong>Correlation</strong> — Log-scale Pearson correlations for
+          shared genera are generally high (&gt;0.9), supporting the
+          reproducibility of community-level patterns across pipelines.</li>
+    </ul>
+
+    <div class="callout warn">
+      <strong>Interpretation note</strong>
+      Direct ASV-level comparisons are not possible because DADA2 ASVs and
+      USEARCH ZOTUs use different denoising algorithms and are not
+      interchangeable sequence units.
+    </div>
+  </section>
+
+  <footer>
+    Generated from <code>compare_pipelines.py</code> · Samples: Lactobacillus_H48 and Spontaneous_H48 (R1, R2) ·
+    Taxonomy: SILVA · 2026
+  </footer>
+
+</main>
+
+</body>
+</html>
